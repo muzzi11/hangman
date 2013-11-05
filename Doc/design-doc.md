@@ -4,7 +4,7 @@ Design Document
 UML Diagram
 -----------
 
-![enter image description here][1]
+![UML Diagram](https://raw.github.com/muzzi11/hangman/master/Doc/uml-diagram.png)
 
 Implementation details
 ----------------------
@@ -16,7 +16,7 @@ GUI
 
  - The UI will be sized for a common resolution (i.e., 320×480 points) and will scale well with higher resolutions.
  - Only portrait mode will be supported. The vertical space is needed to show the animation.
- -  The onscreen keyboard will consist out of separate buttons, one button for each letter. The letters will be alphabetically sorted. Once a letter has been chosen, the corresponding button will be disabled.
+ - The onscreen keyboard will consist out of separate buttons, one button for each letter. The letters will be alphabetically sorted. Once a letter has been chosen, the corresponding button will be disabled.
 
 ----------
 
