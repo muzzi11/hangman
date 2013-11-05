@@ -9,10 +9,12 @@ UML Diagram
 Implementation details
 ----------------------
 
-GUI
-
+The UML diagram above describes all the classes and relations that are required for this project. The open-headed arrows represent dependencies while the white-headed arrows represent inheritance.
 
 ----------
+
+GUI
+
 
  - The UI will be sized for a common resolution (i.e., 320×480 points) and will scale well with higher resolutions.
  - Only portrait mode will be supported. The vertical space is needed to show the animation.
