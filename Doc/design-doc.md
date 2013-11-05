@@ -1,3 +1,52 @@
+Design Document
+===============
+
+UML Diagram
+-----------
+
+![enter image description here][1]
+
+Implementation details
+----------------------
+
+GUI
+
+
+----------
+
+ - The UI will be sized for a common resolution (i.e., 320×480 points) and will scale well with higher resolutions.
+ - Only portrait mode will be supported. The vertical space is needed to show the animation.
+ -  The onscreen keyboard will consist out of separate buttons, one button for each letter. The letters will be alphabetically sorted. Once a letter has been chosen, the corresponding button will be disabled.
+
+----------
+
+Data
+
+
+- The words will be stored in the xml file. There is no need to transform the data into SQLite since the data is static.
+- The high scores will be saved in a raw resource. The data will be saved as key-value pairs, mapping the user to the respective score.
+
+----------
+
+Hangman gameplay
+
+- A random word is chosen from the database with a specific word length. This word will be used throughout the game.
+
+----------
+
+Evil hangman gameplay
+
+- Every word of a specific word length will be loaded in memory. When the user chooses a letter, new list will be compiled. The words will be partitioned into “equivalence classes” based on whether and where they contain E. The class containing the highest count of unique remaining letters will be chosen as the new set of possible words. The user wins when there are no more alternative words left.
+
+----------
+
+Animation
+
+- The user will be notified of a wrongly guessed word by animating the progress of the construction of the gallows. The animation is dependent of the limit of wrongly guessed words.
+
+----------
+
+
 Style Guide
 =======
 
@@ -64,30 +113,44 @@ int square(int n)
 
 Conditions
 ----------
+
+Conditions containing a single statement:
+
 For example:
 ``` java
 if (x > 0)
-{
     System.out.println("x is positive\n");
-}
 else if (x < 0)
-{
     System.out.println("x is negative\n");
-}
 else
-{
     System.out.println("x is zero\n");
-}
 ```
 
 Notice how:
 
-1. the curly braces line up nicely, each on its own line, making perfectly clear what’s inside the branch;
 2. there’s a single space after each if;
 3. each call to the function is indented with 4 spaces;
 4. there are single spaces around the **>** and around the **>** and
 5. there isn't any space immediately after each **(** or immediately before each **)**.
 
+
+----------
+Conditions containing multiple statements:
+
+``` java
+if (x > 0)
+{
+    System.out.println("x is positive\n");
+    foo(x);
+}
+else if (x < 0)
+{
+    System.out.println("x is negative\n");
+    bar(x);
+}
+```
+
+Notice that the curly braces line up nicely, each on its own line, making perfectly clear what’s inside the branch.
 
 ----------
 
@@ -153,7 +216,8 @@ Declare do-while loops as follows:
 
 ``` java
 int count = 1;
-do {
+do 
+{
     System.out.println("Count is: " + count);
     count++;
 } while (count < 11);
@@ -205,3 +269,5 @@ Specific Naming Conventions:
 8. Exception classes should be suffixed with Exception.
 9. Functions (methods returning an object) should be named after what they return and procedures (void methods) after what they do.
 
+
+  [1]: https://raw.github.com/muzzi11/hangman/master/Doc/uml-diagram.png
