@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.hangman.VirtualKeyboard;
 import com.example.hangman.KeyboardListener;
@@ -35,7 +36,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         words[0] = "appel";
         words[1] = "lingo";
         
-        gameplay = new Gameplay(words, 5, 25, this);
+        gameplay = new GoodGameplay(words, 5, 25, this);
         
         setContentView(R.layout.activity_main);        
     }
@@ -52,10 +53,12 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	drawables[0] = resources.getDrawable(R.drawable.correct_guess);
     	drawables[1] = resources.getDrawable(R.drawable.incorrect_guess);
     	drawables[2] = resources.getDrawable(android.R.drawable.bottom_bar);
-    	keyboard = new VirtualKeyboard(GetKeyboardButtons(), drawables, this);
+    	keyboard = new VirtualKeyboard(getKeyboardButtons(), drawables, this);
+    	
+    	updateProgess();    	
     }
         
-    private HashMap<Character, Button> GetKeyboardButtons()
+    private HashMap<Character, Button> getKeyboardButtons()
     {
     	HashMap<Character, Button> buttons = new HashMap<Character, Button>();
     	for (char letter = 'A'; letter <= 'Z'; letter++)
@@ -65,6 +68,13 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 			buttons.put(letter, button);			
 		}    	
     	return buttons;
+    }
+    
+    private void updateProgess()
+    {
+    	String guess = gameplay.getGuess();
+    	TextView text = (TextView)findViewById(R.id.hangmanProgress);
+    	text.setText(guess);
     }
     
     public void onGuess(Boolean correctness, String word)
@@ -83,6 +93,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {
     	Boolean success = gameplay.guess(letter);
     	keyboard.highlight(letter, success);
+    	updateProgess();
     }   
     
     private void loadWords()
