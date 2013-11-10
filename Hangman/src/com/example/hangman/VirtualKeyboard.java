@@ -12,8 +12,9 @@ public class VirtualKeyboard
 	private Drawable correct;
 	private Drawable incorrect;
 	private Drawable normal;
+	private KeyboardListener listener;
 	
-	public VirtualKeyboard(Map<Character, Button> buttons, Drawable[] buttonStates)
+	public VirtualKeyboard(Map<Character, Button> buttons, Drawable[] buttonStates, KeyboardListener listener)
 	{
 		this.correct = buttonStates[0];
 		this.incorrect = buttonStates[1];
@@ -38,9 +39,12 @@ public class VirtualKeyboard
 		Button button = (Button)view;
 		button.setBackgroundDrawable(correct);
 		button.setEnabled(false);
+		
+		char letter = button.getText().charAt(0);
+		listener.keyPressed(letter);
 	}
 	
-	private void Highlight(char letter)
+	public void highlight(char letter, Boolean isCorrect)
 	{
 		Button button = buttons.get(letter);
 		
@@ -48,7 +52,7 @@ public class VirtualKeyboard
 		//button.setBackgroundDrawable(incorrect);
 	}
 	
-	private void Reset()
+	private void reset()
 	{
 		for (Button button : buttons.values())
 		{

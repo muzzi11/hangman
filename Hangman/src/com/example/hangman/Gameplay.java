@@ -2,20 +2,23 @@ package com.example.hangman;
 
 public class Gameplay 
 {
-	private String guess;
-	private GameplayListener listener;
-	private int tries;
-	private int maxTries;
-	private int length;
+	public String guess;
+	public GameplayListener listener;
+	public int tries;	
+	public int length;
 	
-	private String[] words;
+	public String[] words;
 	
-	Gameplay(String[] words, int length, int maxTries, GameplayListener listener)
+	Gameplay(String[] words, int length, int tries, GameplayListener listener)
 	{
 		this.words = words;
 		this.length = length;
 		this.tries = tries;
-		this.listener = listener;	
+		this.listener = listener;
+		
+		guess = "";
+		for (int i = 0; i < length; i++)
+			guess += "_";
 	}
 	
 	public String getGuess()
@@ -23,10 +26,13 @@ public class Gameplay
 		return guess;
 	}
 	
-	public int GetMaxTries()
+	public int getMaxTries()
 	{
 		return tries;
 	}
 	
-	public 
+	public Boolean guess(char letter)
+	{
+		return false;
+	}	
 }
