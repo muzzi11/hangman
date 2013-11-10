@@ -12,13 +12,9 @@
     -->
 
     <TextView
-        android:id="@+id/textView1"
-        android:text="TextView" />
-
-    <TextView
-        android:id="@+id/fullscreen_content"
+        android:id="@+id/hangmanProgress"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="268dp"
         android:gravity="center"
         android:keepScreenOn="true"
         android:text="@string/dummy_content"
@@ -218,9 +214,5 @@
                 android:text="Z" />
         </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView1"
-        android:text="TextView" />
 
 </FrameLayout>
