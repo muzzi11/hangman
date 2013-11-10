@@ -1,12 +1,17 @@
 package com.example.hangman;
 
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Vector;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Xml;
 import android.widget.Button;
 
 import com.example.hangman.VirtualKeyboard;
@@ -15,6 +20,7 @@ import com.example.hangman.GameplayListener;
 public class MainActivity extends Activity implements GameplayListener 
 {
 	private VirtualKeyboard keyboard;
+	private Vector<String> words = new Vector<String>();
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -28,6 +34,8 @@ public class MainActivity extends Activity implements GameplayListener
     protected void onStart()
     {
     	super.onStart();
+    	
+    	loadWords();
     	
     	Resources resources = getResources();
     	Drawable[] drawables = new Drawable[3];
@@ -61,4 +69,28 @@ public class MainActivity extends Activity implements GameplayListener
     {    	
     }    
     
+    private void loadWords()
+    {
+    	int eventType;
+    	XmlPullParser parser = Xml.newPullParser();
+    	InputStream stream = getApplicationContext().getAssets().open("data/words.xml");
+    	
+    	parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+    	parser.setInput(stream, null);
+    	
+    	eventType = parser.getEventType();
+    	while(eventType != XmlPullParser.END_DOCUMENT)
+    	{
+    		if(eventType == XmlPullParser.START_TAG)
+    		{
+    			if(parser.getName() == "item")
+    			{
+    				String word = parser.nextText();
+    				words.add(word);
+    			}
+    		}
+    		
+    		eventType = parser.next();
+    	}
+    }
 }
