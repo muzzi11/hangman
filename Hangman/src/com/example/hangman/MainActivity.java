@@ -112,7 +112,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	    	{
 	    		if(eventType == XmlPullParser.START_TAG)
 	    		{
-	    			if(parser.getName() == "item")
+	    			if(parser.getName().equals("item"))
 	    			{
 	    				String word = parser.nextText();
 	    				words.add(word);
