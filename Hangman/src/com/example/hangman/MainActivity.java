@@ -102,7 +102,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	XmlPullParser parser = Xml.newPullParser();
     	try
     	{
-	    	InputStream stream = getApplicationContext().getAssets().open("data/words.xml");
+	    	InputStream stream = getApplicationContext().getAssets().open("words.xml");
 	    	
 	    	parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
 	    	parser.setInput(stream, null);
@@ -124,11 +124,11 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	}
     	catch(XmlPullParserException e)
     	{
-    		e.printStackTrace();
+    		Log.e("loadWords", e.getMessage());
     	}
     	catch(IOException e)
     	{
-    		e.printStackTrace();
+    		Log.e("loadWords", e.getMessage());
     	}
     } 
 }
