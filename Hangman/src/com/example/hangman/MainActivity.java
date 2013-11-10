@@ -9,9 +9,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
-import com.example.hangman.VirtualKeyboard;;
+import com.example.hangman.VirtualKeyboard;
+import com.example.hangman.GameplayListener;
 
-public class MainActivity extends Activity 
+public class MainActivity extends Activity implements GameplayListener 
 {
 	private VirtualKeyboard keyboard;
 	
@@ -32,8 +33,7 @@ public class MainActivity extends Activity
     	Drawable[] drawables = new Drawable[3];
     	drawables[0] = resources.getDrawable(R.drawable.correct_guess);
     	drawables[1] = resources.getDrawable(R.drawable.incorrect_guess);
-    	drawables[2] = resources.getDrawable(android.R.drawable.bottom_bar);
-    	
+    	drawables[2] = resources.getDrawable(android.R.drawable.bottom_bar);    	
     	keyboard = new VirtualKeyboard(GetKeyboardButtons(), drawables);    	
     }
         
@@ -48,4 +48,17 @@ public class MainActivity extends Activity
 		}    	
     	return buttons;
     }
+    
+    public void onGuess(Boolean correctness, String word)
+    {
+    }
+    
+    public void onLose(String word)
+    {    
+    }
+    
+    public void onWin(String word)
+    {    	
+    }    
+    
 }
