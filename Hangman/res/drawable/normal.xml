@@ -3,15 +3,7 @@
     <item>
     	<shape>
             <solid
-                android:color="@color/green" />
-            <stroke
-                android:width="0dp"
-                android:color="@color/green" />
-            <corners                
-                android:topLeftRadius="1dp"
-       			android:topRightRadius="1dp"
-       			android:bottomLeftRadius="1dp"
-        		android:bottomRightRadius="1dp" />
+                android:background="@android:drawable/bottom_bar" />            
             <padding
                 android:left="2dp"
                 android:top="5dp"

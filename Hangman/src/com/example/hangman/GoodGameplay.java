@@ -19,14 +19,16 @@ public class GoodGameplay extends Gameplay
 	}
 	
 	@Override
-	public Boolean guess(char letter)
-	{
+	public void guess(char letter)	
+	{	
+		this.tries++;
 		if (word.contains("" + letter))
 		{
-			updateGuess(letter);
-			return true;
+			updateGuess(letter);			
+			listener.onGuess(true, letter);
 		}
-		return false;
+		else
+			listener.onGuess(false, letter);
 	}
 	
 	private void updateGuess(char letter)
@@ -40,7 +42,9 @@ public class GoodGameplay extends Gameplay
 			updatedGuess.setCharAt(index, letter);
 		
 		this.guess = updatedGuess.toString();
-		Log.d("Hangman", updatedGuess.toString());
+				
+		if (finished()) listener.onWin(word);
+		if (lost()) listener.onLose(word);	
 	}
 	
 	private void chooseWord()

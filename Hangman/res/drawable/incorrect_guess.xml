@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/red"/> <!-- default -->
-</selector>
+ <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+    	<shape>
+            <solid
+                android:color="@color/red" />
+            <stroke
+                android:width="0dp"
+                android:color="@color/red" />
+            <corners                
+                android:topLeftRadius="1dp"
+       			android:topRightRadius="1dp"
+       			android:bottomLeftRadius="1dp"
+        		android:bottomRightRadius="1dp" />
+            <padding
+                android:left="2dp"
+                android:top="5dp"
+                android:right="2dp"
+                android:bottom="10dp" />
+        </shape>
+	</item>
+</layer-list>

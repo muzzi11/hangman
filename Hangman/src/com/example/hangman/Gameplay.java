@@ -4,17 +4,20 @@ public class Gameplay
 {
 	public String guess;
 	public GameplayListener listener;
+	public int maxTries;
 	public int tries;	
 	public int length;
 	
 	public String[] words;
 	
-	Gameplay(String[] words, int length, int tries, GameplayListener listener)
+	Gameplay(String[] words, int length, int maxTries, GameplayListener listener)
 	{
 		this.words = words;
 		this.length = length;
-		this.tries = tries;
+		this.maxTries = maxTries;		
 		this.listener = listener;
+		
+		tries = 0;
 		
 		guess = "";
 		for (int i = 0; i < length; i++)
@@ -31,8 +34,17 @@ public class Gameplay
 		return tries;
 	}
 	
-	public Boolean guess(char letter)
-	{
-		return false;
+	public void guess(char letter)
+	{		
 	}	
+	
+	public Boolean finished()
+	{
+		return !guess.contains("_");
+	}
+	
+	public Boolean lost()
+	{
+		return tries >= maxTries;
+	}
 }
