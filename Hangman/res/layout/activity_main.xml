@@ -27,29 +27,190 @@
          android:fitsSystemWindows.
     -->
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/VirtualKeyboard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true" >
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?buttonBarStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent" >
+            android:layout_height="wrap_content" >
 
             <Button
-                android:id="@+id/dummy_button"
-                style="?buttonBarButtonStyle"
-                android:layout_width="0dp"
+                android:id="@+id/Key1"
+                android:layout_width="45dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
+                android:text="A" />
+
+            <Button
+                android:id="@+id/Key2"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="B" />
+
+            <Button
+                android:id="@+id/Key3"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="C" />
+
+            <Button
+                android:id="@+id/Key4"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="D" />
+
+            <Button
+                android:id="@+id/Key5"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="E" />
+
+            <Button
+                android:id="@+id/Key6"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="F" />
+
+            <Button
+                android:id="@+id/Key7"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="G" />
+
         </LinearLayout>
-    </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/Key8"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="H" />
+
+            <Button
+                android:id="@+id/Key9"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="I" />
+
+            <Button
+                android:id="@+id/Key10"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="J" />
+
+            <Button
+                android:id="@+id/Key11"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="K" />
+
+            <Button
+                android:id="@+id/Key12"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="L" />
+
+            <Button
+                android:id="@+id/Key13"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="M" />
+
+            <Button
+                android:id="@+id/Key14"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="N" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/Key15"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="O" />
+
+            <Button
+                android:id="@+id/Key16"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="P" />
+
+            <Button
+                android:id="@+id/Key17"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="Q" />
+
+            <Button
+                android:id="@+id/Key18"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="R" />
+
+            <Button
+                android:id="@+id/Key19"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="S" />
+
+            <Button
+                android:id="@+id/Key20"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="T" />
+
+            <Button
+                android:id="@+id/Key21"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="U" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" >
+
+            <Button
+                android:id="@+id/Key22"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="V" />
+
+            <Button
+                android:id="@+id/Key23"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="W" />
+
+            <Button
+                android:id="@+id/Key24"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="X" />
+
+            <Button
+                android:id="@+id/Key25"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="Y" />
+
+            <Button
+                android:id="@+id/Key26"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:text="Z" />
+        </LinearLayout>
+    </LinearLayout>
 
 </FrameLayout>
