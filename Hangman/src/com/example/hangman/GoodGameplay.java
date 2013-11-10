@@ -1,7 +1,10 @@
 package com.example.hangman;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
+
+import android.util.Log;
 
 public class GoodGameplay extends Gameplay
 {
@@ -12,6 +15,7 @@ public class GoodGameplay extends Gameplay
 		super(words, length, tries, listener);
 		
 		chooseWord();
+		Log.d("Hangman", word);
 	}
 	
 	@Override
@@ -35,7 +39,8 @@ public class GoodGameplay extends Gameplay
 		for (int index : indices)
 			updatedGuess.setCharAt(index, letter);
 		
-		guess = updatedGuess.toString();
+		this.guess = updatedGuess.toString();
+		Log.d("Hangman", updatedGuess.toString());
 	}
 	
 	private void chooseWord()
@@ -48,6 +53,6 @@ public class GoodGameplay extends Gameplay
 		
 		Random generator = new Random();
 		int index = generator.nextInt(words.size());
-		this.word = words.get(index);
+		this.word = words.get(index).toUpperCase(Locale.UK);
 	}
 }

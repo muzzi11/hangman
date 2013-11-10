@@ -20,6 +20,7 @@ public class VirtualKeyboard
 		this.incorrect = buttonStates[1];
 		this.normal = buttonStates[2];
 		this.buttons = buttons;
+		this.listener = listener;
 		
 		for (Button button : buttons.values())
 		{
@@ -48,8 +49,10 @@ public class VirtualKeyboard
 	{
 		Button button = buttons.get(letter);
 		
-		//button.setBackgroundDrawable(correct);
-		//button.setBackgroundDrawable(incorrect);
+		if (isCorrect)
+			button.setBackgroundDrawable(correct);
+		else
+			button.setBackgroundDrawable(incorrect);
 	}
 	
 	private void reset()
