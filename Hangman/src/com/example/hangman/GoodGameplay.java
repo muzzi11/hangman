@@ -3,6 +3,7 @@ package com.example.hangman;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Vector;
 
 import android.util.Log;
 
@@ -10,7 +11,7 @@ public class GoodGameplay extends Gameplay
 {
 	private String word;
 	
-	public GoodGameplay(String[] words, int length, int tries, GameplayListener listener)
+	public GoodGameplay(Vector<String> words, int length, int tries, GameplayListener listener)
 	{
 		super(words, length, tries, listener);
 		

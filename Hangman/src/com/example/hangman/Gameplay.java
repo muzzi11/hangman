@@ -1,5 +1,7 @@
 package com.example.hangman;
 
+import java.util.Vector;
+
 public class Gameplay 
 {
 	public String guess;
@@ -8,9 +10,9 @@ public class Gameplay
 	public int tries;	
 	public int length;
 	
-	public String[] words;
+	public Vector<String> words;
 	
-	Gameplay(String[] words, int length, int maxTries, GameplayListener listener)
+	Gameplay(Vector<String> words, int length, int maxTries, GameplayListener listener)
 	{
 		this.words = words;
 		this.length = length;

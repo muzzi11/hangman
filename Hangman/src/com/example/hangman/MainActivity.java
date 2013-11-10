@@ -1,12 +1,19 @@
 package com.example.hangman;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Vector;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Xml;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,6 +28,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private VirtualKeyboard keyboard;
 	private Gameplay gameplay;
 	
+	private Vector<String> words = new Vector<String>();	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {   				
@@ -33,6 +42,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     protected void onStart()
     {
     	super.onStart();
+    	
+    	loadWords();
     	
     	Resources resources = getResources();
     	Drawable[] drawables = new Drawable[3];
@@ -62,13 +73,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     private void startGame()
-    {
-        String[] words = new String[2];
-        words[0] = "appel";
-        words[1] = "lingo";
-        
-        gameplay = new GoodGameplay(words, 5, 5, this);
-        
+    {        
+        gameplay = new GoodGameplay(words, 5, 15, this);        
     	updateProgess();
     }    
             
@@ -114,5 +120,41 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {
     	keyboard.reset();
     	startGame();    
+    } 
+    
+    private void loadWords()
+    {
+    	int eventType;
+    	XmlPullParser parser = Xml.newPullParser();
+    	try
+    	{
+	    	InputStream stream = getApplicationContext().getAssets().open("words.xml");
+	    	
+	    	parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+	    	parser.setInput(stream, null);
+	    	
+	    	eventType = parser.getEventType();
+	    	while(eventType != XmlPullParser.END_DOCUMENT)
+	    	{
+	    		if(eventType == XmlPullParser.START_TAG)
+	    		{
+	    			if(parser.getName().equals("item"))
+	    			{
+	    				String word = parser.nextText();
+	    				words.add(word);
+	    			}
+	    		}
+	    		
+	    		eventType = parser.next();
+	    	}
+    	}
+    	catch(XmlPullParserException e)
+    	{
+    		Log.e("loadWords", e.getMessage());
+    	}
+    	catch(IOException e)
+    	{
+    		Log.e("loadWords", e.getMessage());
+    	}
     }
 }
