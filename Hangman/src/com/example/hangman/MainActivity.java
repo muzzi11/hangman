@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -34,7 +35,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     protected void onCreate(Bundle savedInstanceState) 
     {   				
         super.onCreate(savedInstanceState);       
-       
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);        
     }
     
@@ -43,7 +44,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {
     	super.onStart();
     	
-    	loadWords();
+    	//loadWords();
+    	words.add("loela");
     	
     	Resources resources = getResources();
     	Drawable[] drawables = new Drawable[3];

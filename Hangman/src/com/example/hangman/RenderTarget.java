@@ -2,6 +2,8 @@ package com.example.hangman;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -22,9 +24,9 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 			this.renderTarget = renderTarget;
 		}
 		
-		public void stopRunning()
+		public void setRunning(boolean state)
 		{
-			run = false;
+			run = state;
 		}
 		
 		@Override
@@ -41,6 +43,8 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 					canvas = surfaceHolder.lockCanvas();
 					synchronized (surfaceHolder)
 					{
+						canvas.drawColor(Color.BLUE);
+						canvas.drawCircle(50, 50, 50, new Paint());
 						renderTarget.postInvalidate();
 					}
 				}
@@ -80,6 +84,7 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 	{
 		setWillNotDraw(false);
 		thread = new RenderThread(holder, this);
+		thread.setRunning(true);
 		thread.start();
 	}
 
@@ -88,7 +93,7 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 	{
 		try
 		{
-			thread.stopRunning();
+			thread.setRunning(false);
 			thread.join();
 		}
 		catch(InterruptedException e)
