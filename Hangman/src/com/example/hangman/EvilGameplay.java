@@ -93,8 +93,18 @@ public class EvilGameplay extends Gameplay
 			for (String word : words)
 			{
 				boolean isEqual = true;
-				for (int index : indices)
-					if (word.charAt(index) != letter) isEqual = false;
+				
+				int occurences = 0;
+				for (int i = -1; (i = word.indexOf(letter, i + 1)) != -1;)
+					occurences++;
+				
+				if (indices.size() == occurences)
+				{
+					for (int index : indices)
+						if (word.charAt(index) != letter) isEqual = false;
+				}
+				else
+					isEqual = false;				
 				
 				if (isEqual) 
 				{
