@@ -20,24 +20,21 @@ import android.widget.TextView;
 import com.example.hangman.VirtualKeyboard;
 import com.example.hangman.KeyboardListener;
 import com.example.hangman.GameplayListener;
+import com.example.hangman.WinDialog;
+import com.example.hangman.DialogListener;
 
-public class MainActivity extends Activity implements GameplayListener, KeyboardListener
+public class MainActivity extends Activity implements GameplayListener, KeyboardListener, DialogListener
 {
 	private VirtualKeyboard keyboard;
-	private Vector<String> words = new Vector<String>();
 	private Gameplay gameplay;
+	
+	private Vector<String> words = new Vector<String>();	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {   				
-        super.onCreate(savedInstanceState);
-        
-        String[] words = new String[2];
-        words[0] = "appel";
-        words[1] = "lingo";
-        
-        gameplay = new GoodGameplay(words, 5, 25, this);
-        
+        super.onCreate(savedInstanceState);       
+       
         setContentView(R.layout.activity_main);        
     }
     
@@ -50,14 +47,14 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	
     	Resources resources = getResources();
     	Drawable[] drawables = new Drawable[3];
-    	drawables[0] = resources.getDrawable(R.drawable.correct_guess);
+    	drawables[0] = resources.getDrawable(R.drawable.correct_guess_selector);
     	drawables[1] = resources.getDrawable(R.drawable.incorrect_guess);
     	drawables[2] = resources.getDrawable(android.R.drawable.bottom_bar);
     	keyboard = new VirtualKeyboard(getKeyboardButtons(), drawables, this);
     	
-    	updateProgess();    	
+    	startGame();
     }
-        
+    
     private HashMap<Character, Button> getKeyboardButtons()
     {
     	HashMap<Character, Button> buttons = new HashMap<Character, Button>();
@@ -67,9 +64,20 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 			Button button = (Button) findViewById(resourceID);			
 			buttons.put(letter, button);			
 		}    	
-    	return buttons;
+        return buttons;
     }
     
+    // Load previous game settings
+    private void load()
+    {
+    }
+    
+    private void startGame()
+    {        
+        gameplay = new GoodGameplay(words, 5, 15, this);        
+    	updateProgess();
+    }    
+            
     private void updateProgess()
     {
     	String guess = gameplay.getGuess();
@@ -77,24 +85,42 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	text.setText(guess);
     }
     
-    public void onGuess(Boolean correctness, String word)
+    public void onKeyPressed(char letter)
     {
+    	gameplay.guess(letter);    	
+    }   
+    
+    public void onGuess(Boolean success, char letter)
+    {
+    	keyboard.highlight(letter, success);
+    	updateProgess();
     }
     
     public void onLose(String word)
     {    
+    	LoseDialog dialog = new LoseDialog();
+    	dialog.setListener(this);
+    	dialog.setCancelable(false);
+    	dialog.show(getFragmentManager(), "Hangman");
     }
     
     public void onWin(String word)
-    {    	
+    {    
+    	WinDialog dialog = new WinDialog();
+    	dialog.setListener(this);
+    	dialog.setCancelable(false);
+    	dialog.show(getFragmentManager(), "Hangman");
+    }    
+    
+    public void onHighscoreSelect()
+    {    
     }
     
-    public void keyPressed(char letter)
+    public void onNewGame()
     {
-    	Boolean success = gameplay.guess(letter);
-    	keyboard.highlight(letter, success);
-    	updateProgess();
-    }   
+    	keyboard.reset();
+    	startGame();    
+    } 
     
     private void loadWords()
     {
@@ -130,5 +156,5 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	{
     		Log.e("loadWords", e.getMessage());
     	}
-    } 
+    }
 }

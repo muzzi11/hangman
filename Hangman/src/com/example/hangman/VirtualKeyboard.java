@@ -42,7 +42,7 @@ public class VirtualKeyboard
 		button.setEnabled(false);
 		
 		char letter = button.getText().charAt(0);
-		listener.keyPressed(letter);
+		listener.onKeyPressed(letter);
 	}
 	
 	public void highlight(char letter, Boolean isCorrect)
@@ -55,7 +55,7 @@ public class VirtualKeyboard
 			button.setBackgroundDrawable(incorrect);
 	}
 	
-	private void reset()
+	public void reset()
 	{
 		for (Button button : buttons.values())
 		{

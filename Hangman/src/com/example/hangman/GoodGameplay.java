@@ -3,6 +3,7 @@ package com.example.hangman;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Vector;
 
 import android.util.Log;
 
@@ -10,7 +11,7 @@ public class GoodGameplay extends Gameplay
 {
 	private String word;
 	
-	public GoodGameplay(String[] words, int length, int tries, GameplayListener listener)
+	public GoodGameplay(Vector<String> words, int length, int tries, GameplayListener listener)
 	{
 		super(words, length, tries, listener);
 		
@@ -19,14 +20,16 @@ public class GoodGameplay extends Gameplay
 	}
 	
 	@Override
-	public Boolean guess(char letter)
-	{
+	public void guess(char letter)	
+	{	
+		this.tries++;
 		if (word.contains("" + letter))
 		{
-			updateGuess(letter);
-			return true;
+			updateGuess(letter);			
+			listener.onGuess(true, letter);
 		}
-		return false;
+		else
+			listener.onGuess(false, letter);
 	}
 	
 	private void updateGuess(char letter)
@@ -40,7 +43,9 @@ public class GoodGameplay extends Gameplay
 			updatedGuess.setCharAt(index, letter);
 		
 		this.guess = updatedGuess.toString();
-		Log.d("Hangman", updatedGuess.toString());
+				
+		if (finished()) listener.onWin(word);
+		if (lost()) listener.onLose(word);	
 	}
 	
 	private void chooseWord()
