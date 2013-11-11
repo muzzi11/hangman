@@ -1,7 +1,9 @@
 package com.example.hangman;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -44,8 +46,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {
     	super.onStart();
     	
-    	//loadWords();
-    	words.add("loela");
+    	loadWords();
     	
     	Resources resources = getResources();
     	Drawable[] drawables = new Drawable[3];
@@ -126,33 +127,19 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     private void loadWords()
     {
-    	int eventType;
-    	XmlPullParser parser = Xml.newPullParser();
     	try
     	{
-	    	InputStream stream = getApplicationContext().getAssets().open("words.xml");
-	    	
-	    	parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-	    	parser.setInput(stream, null);
-	    	
-	    	eventType = parser.getEventType();
-	    	while(eventType != XmlPullParser.END_DOCUMENT)
-	    	{
-	    		if(eventType == XmlPullParser.START_TAG)
-	    		{
-	    			if(parser.getName().equals("item"))
-	    			{
-	    				String word = parser.nextText();
-	    				words.add(word);
-	    			}
-	    		}
-	    		
-	    		eventType = parser.next();
-	    	}
-    	}
-    	catch(XmlPullParserException e)
-    	{
-    		Log.e("loadWords", e.getMessage());
+    		InputStream stream = getApplicationContext().getAssets().open("words.txt");
+    		InputStreamReader inputStreamReader = new InputStreamReader(stream);
+    		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+    		
+    		String line;
+    		while((line = bufferedReader.readLine()) != null)
+    		{
+    			words.add(line);
+    		}
+    		
+    		bufferedReader.close();
     	}
     	catch(IOException e)
     	{
