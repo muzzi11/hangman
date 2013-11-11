@@ -15,21 +15,34 @@ public class GoodGameplay extends Gameplay
 	{
 		super(words, length, tries, listener);
 		
+		filterWords();
 		chooseWord();
 		Log.d("Hangman", word);
 	}
 	
+	private void filterWords()
+	{
+		Vector<String> filteredWords = new Vector<String>();
+		
+		for (String word : this.words)		
+			if (word.length() == this.length)
+				filteredWords.add(word);	
+		words = filteredWords;
+	}
+	
 	@Override
 	public void guess(char letter)	
-	{	
-		this.tries++;
+	{			
 		if (word.contains("" + letter))
 		{
 			updateGuess(letter);			
 			listener.onGuess(true, letter);
 		}
 		else
+		{
+			this.tries++;
 			listener.onGuess(false, letter);
+		}			
 	}
 	
 	private void updateGuess(char letter)
@@ -45,7 +58,7 @@ public class GoodGameplay extends Gameplay
 		this.guess = updatedGuess.toString();
 				
 		if (finished()) listener.onWin(word);
-		if (lost()) listener.onLose(word);	
+		else if (lost()) listener.onLose(word);	
 	}
 	
 	private void chooseWord()

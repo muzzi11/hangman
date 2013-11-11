@@ -23,7 +23,7 @@ public class Gameplay
 		
 		guess = "";
 		for (int i = 0; i < length; i++)
-			guess += "_";
+			guess += "-";
 	}
 	
 	public String getGuess()
@@ -42,7 +42,7 @@ public class Gameplay
 	
 	public Boolean finished()
 	{
-		return !guess.contains("_");
+		return !guess.contains("-");
 	}
 	
 	public Boolean lost()

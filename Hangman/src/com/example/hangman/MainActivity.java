@@ -74,7 +74,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     private void startGame()
     {        
-        gameplay = new GoodGameplay(words, 5, 15, this);        
+        //gameplay = new GoodGameplay(words, 5, 15, this);
+    	gameplay = new EvilGameplay(words, 5, 15, this);
     	updateProgess();
     }    
             
