@@ -20,9 +20,10 @@ public class EvilGameplay extends Gameplay
 	
 	@Override
 	public void guess(char letter)	
-	{	
-		this.tries++;
-		getWordGroup(letter);		
+	{					
+		Vector<Vector<Integer>> classes = getEquivalenceClasses(letter);
+		Vector<Vector<String>> wordGroups = getWordGroups(classes, letter);
+		findLargestClass(wordGroups, classes, letter);
 	}
 	
 	private void filterWords()
@@ -32,22 +33,13 @@ public class EvilGameplay extends Gameplay
 		for (String word : this.words)		
 			if (word.length() == this.length)
 				filteredWords.add(word);	
-		words = filteredWords;
+		this.words = filteredWords;
 	}
 	
-	private void getWordGroup(char letter)
+	private Vector<Vector<Integer>> getEquivalenceClasses(char letter)
 	{
-		Vector<Vector<String>> classes = new Vector<Vector<String>>();
-		Vector<Vector<Integer>> classDefinitions = new Vector<Vector<Integer>>();
-		SparseIntArray uniqueCharCount = new SparseIntArray();
+		Vector<Vector<Integer>> classes = new Vector<Vector<Integer>>();
 		
-		Vector<String> emptyClass = new Vector<String>();
-		int emptyClassSize = 0;
-		
-		Log.d("Hangman", "Total words: " + words.size());
-		if (words.size() == 1 ) Log.d("Hangman", "last word: " + words.get(0)); 	
-		
-		// Get class specifications.
 		for (String word : words)
 		{
 			if (word.contains("" + letter))
@@ -57,7 +49,7 @@ public class EvilGameplay extends Gameplay
 					indices.add(i);				
 				
 				boolean isUnique = true;				
-				for (Vector<Integer> definition : classDefinitions)
+				for (Vector<Integer> definition : classes)
 				{
 					if (definition.size() != indices.size())					
 						continue;
@@ -65,31 +57,25 @@ public class EvilGameplay extends Gameplay
 					int counter = 0;
 					for (int i = 0; i < definition.size(); i++)
 					{
-						if (definition.get(i) == indices.get(i))
-						{
-							counter++;
-						}						 
+						if (definition.get(i) == indices.get(i))						
+							counter++;												 
 					}		
 					if (counter == definition.size()) isUnique = false;
 				}				
-				if (isUnique) classDefinitions.add(indices);				
-			}	
-			else
-			{
-				emptyClass.add(word);
-				emptyClassSize += getUniqueChars(word);
-			}
+				if (isUnique) classes.add(indices);				
+			}			
 		}
-		
-		Log.d("Hangman", "Classes: " + classDefinitions.size());
-		
-		// Find matching words and count unique characters
-		int classID = 0;
-		for (Vector<Integer> indices : classDefinitions)
-		{
-			Vector<String> remainderWords = new Vector<String>();
-			Vector<String> matchedWords = new Vector<String>();
-						
+		return classes;
+	}
+	
+	private Vector<Vector<String>> getWordGroups(Vector<Vector<Integer>> equivalenceClasses, char letter)
+	{		
+		Vector<Vector<String>> wordGroups = new Vector<Vector<String>>();			
+				
+		for (Vector<Integer> indices : equivalenceClasses)
+		{			
+			Vector<String> matchedWords = new Vector<String>();			
+			
 			for (String word : words)
 			{
 				boolean isEqual = true;
@@ -106,57 +92,59 @@ public class EvilGameplay extends Gameplay
 				else
 					isEqual = false;				
 				
-				if (isEqual) 
-				{
+				if (isEqual)				
 					matchedWords.add(word);
-					if (uniqueCharCount.indexOfKey(classID) > -1)
-						uniqueCharCount.put(classID, uniqueCharCount.get(classID) + getUniqueChars(word));
-					else
-						uniqueCharCount.put(classID, getUniqueChars(word));
-				}
-				else remainderWords.add(word);
 			}
-			words = remainderWords;
-			classes.add(matchedWords);
-			classID++;
-		}
-		
-		// Find largest class
-		int maxValue = 0, id = 0;
-		for (int i = 0; i < uniqueCharCount.size(); i++)
-		{
-			int count = uniqueCharCount.get(i);
-			if (count > maxValue)
-			{
-				maxValue = count;
-				id = i;
-			}		
-		}
-		Log.d("Hangman", "empty class: " + emptyClassSize);
-		Log.d("Hangman", "other class: " + maxValue);
-		
+			for (String word : matchedWords)
+				words.remove(word);
 			
-		if (emptyClassSize > maxValue) 
-		{
-			this.words = emptyClass;
-			listener.onGuess(false, letter);
-		}
-		else
-		{
-			words = classes.get(id);
-		
-			StringBuilder updatedGuess = new StringBuilder(guess);
-			for (int index : classDefinitions.get(id))			
-				updatedGuess.setCharAt(index, letter);
-			
-			this.guess = updatedGuess.toString();
-			listener.onGuess(true, letter);
-		}
-				
-		//if (finished()) listener.onWin(word);
-		//else if (lost()) listener.onLose(word);	
+			wordGroups.add(matchedWords);			
+		}		
+		wordGroups.add(this.words);
+		return wordGroups;
 	}
 	
+	private void findLargestClass(Vector<Vector<String>> wordGroups, Vector<Vector<Integer>> equivalenceClasses, char letter)
+	{
+		int maxValue = 0, id = 0;
+		
+		for (Vector<String> group : wordGroups)
+		{
+			int sum = 0;
+			for (String word : group)			
+				sum += getUniqueChars(word);
+			
+			if (sum > maxValue)
+			{
+				maxValue = sum;
+				id = wordGroups.indexOf(group);
+			}				
+		}
+		
+		boolean wrongGuess = (id == wordGroups.size() - 1);		
+		
+		this.words = wordGroups.get(id);
+		listener.onGuess(!wrongGuess, letter);		
+	
+		if (wrongGuess)
+		{
+			Log.d("Handman", "" + this.tries);
+			this.tries++;
+			return;
+		}
+		
+		StringBuilder updatedGuess = new StringBuilder(guess);
+		for (int index : equivalenceClasses.get(id))			
+			updatedGuess.setCharAt(index, letter);
+		
+		this.guess = updatedGuess.toString();
+		
+		Log.d("Handman", "" + this.tries);
+		
+		if (finished()) this.listener.onWin(this.words.get(0));
+		else if (lost()) this.listener.onLose(this.words.get(0));
+	}	
+			
 	private int getUniqueChars(String word)
 	{
 		HashSet<Character> set = new HashSet<Character>();    

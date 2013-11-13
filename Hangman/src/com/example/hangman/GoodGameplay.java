@@ -13,64 +13,45 @@ public class GoodGameplay extends Gameplay
 	
 	public GoodGameplay(Vector<String> words, int length, int tries, GameplayListener listener)
 	{
-		super(words, length, tries, listener);
+		super(words, length, tries, listener);		
 		
-		filterWords();
-		chooseWord();
-		Log.d("Hangman", word);
+		chooseWord();		
 	}
-	
-	private void filterWords()
-	{
-		Vector<String> filteredWords = new Vector<String>();
 		
-		for (String word : this.words)		
-			if (word.length() == this.length)
-				filteredWords.add(word);	
-		words = filteredWords;
-	}
-	
 	@Override
 	public void guess(char letter)	
-	{			
-		if (word.contains("" + letter))
-		{
-			updateGuess(letter);			
-			listener.onGuess(true, letter);
-		}
-		else
-		{
-			this.tries++;
-			listener.onGuess(false, letter);
-		}			
+	{		
+		boolean succes = this.word.contains("" + letter);
+		
+		if (succes) updateGuess(letter);		
+		else this.tries++;
+			
+		this.listener.onGuess(succes, letter);					
 	}
 	
 	private void updateGuess(char letter)
 	{
 		ArrayList<Integer> indices = new ArrayList<Integer>();
-		for (int i = -1; (i = word.indexOf(letter, i + 1)) != -1;)		
+		for (int i = -1; (i = this.word.indexOf(letter, i + 1)) != -1;)		
 			indices.add(i);
 		
-		StringBuilder updatedGuess = new StringBuilder(guess);
+		StringBuilder updatedGuess = new StringBuilder(this.guess);
 		for (int index : indices)
 			updatedGuess.setCharAt(index, letter);
 		
 		this.guess = updatedGuess.toString();
 				
-		if (finished()) listener.onWin(word);
-		else if (lost()) listener.onLose(word);	
+		if (finished()) this.listener.onWin(this.word);
+		else if (lost()) this.listener.onLose(this.word);	
 	}
 	
 	private void chooseWord()
 	{
-		ArrayList<String> words = new ArrayList<String>();
-		
-		for (String word : this.words)		
-			if (word.length() == this.length)
-				words.add(word);		
-		
 		Random generator = new Random();
-		int index = generator.nextInt(words.size());
-		this.word = words.get(index).toUpperCase(Locale.UK);
+		do
+		{
+			int index = generator.nextInt(this.words.size());
+			this.word = this.words.get(index).toUpperCase(Locale.UK);			
+		} while (this.word.length() != this.length);		
 	}
 }
