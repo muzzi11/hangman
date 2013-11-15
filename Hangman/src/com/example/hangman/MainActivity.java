@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -31,7 +32,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private VirtualKeyboard keyboard;
 	private Gameplay gameplay;
 	
-	private Vector<String> words = new Vector<String>();	
+	private ArrayList<String> words = new ArrayList<String>();	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
