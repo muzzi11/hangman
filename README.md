@@ -13,6 +13,7 @@ How to get it up and running
 - Open the SDKManager and install the SDK Platform, system images and Google APIs for Android 4.2.2(API17)
 - Open Eclipse and choose a workspace folder that's different from the project folder
 - New > Project> Android > Android Project from Existing Code
+- Right click on Hangman in the package explorer and select Build Path > Link Source and browse to the AndEngine-GLES2/src folder located in the cloned folder. Set the folder name to AndEngine_src.
 
 Features
 ---------
