@@ -1,17 +1,12 @@
 package com.example.hangman;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Vector;
-
 import android.util.Log;
-import android.util.SparseIntArray;
 
 public class EvilGameplay extends Gameplay
 {		
-	public EvilGameplay(Vector<String> words, int length, int tries, GameplayListener listener)
+	public EvilGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{
 		super(words, length, tries, listener);		
 		
@@ -21,14 +16,14 @@ public class EvilGameplay extends Gameplay
 	@Override
 	public void guess(char letter)	
 	{					
-		Vector<Vector<Integer>> classes = getEquivalenceClasses(letter);
-		Vector<Vector<String>> wordGroups = getWordGroups(classes, letter);
+		ArrayList<ArrayList<Integer>> classes = getEquivalenceClasses(letter);
+		ArrayList<ArrayList<String>> wordGroups = getWordGroups(classes, letter);
 		findLargestClass(wordGroups, classes, letter);
 	}
 	
 	private void filterWords()
 	{
-		Vector<String> filteredWords = new Vector<String>();
+		ArrayList<String> filteredWords = new ArrayList<String>();
 		
 		for (String word : this.words)		
 			if (word.length() == this.length)
@@ -36,20 +31,20 @@ public class EvilGameplay extends Gameplay
 		this.words = filteredWords;
 	}
 	
-	private Vector<Vector<Integer>> getEquivalenceClasses(char letter)
+	private ArrayList<ArrayList<Integer>> getEquivalenceClasses(char letter)
 	{
-		Vector<Vector<Integer>> classes = new Vector<Vector<Integer>>();
+		ArrayList<ArrayList<Integer>> classes = new ArrayList<ArrayList<Integer>>();
 		
 		for (String word : words)
 		{
 			if (word.contains("" + letter))
 			{				
-				Vector<Integer> indices = new Vector<Integer>();
+				ArrayList<Integer> indices = new ArrayList<Integer>();
 				for (int i = -1; (i = word.indexOf(letter, i + 1)) != -1;)					
 					indices.add(i);				
 				
 				boolean isUnique = true;				
-				for (Vector<Integer> definition : classes)
+				for (ArrayList<Integer> definition : classes)
 				{
 					if (definition.size() != indices.size())					
 						continue;
@@ -68,13 +63,13 @@ public class EvilGameplay extends Gameplay
 		return classes;
 	}
 	
-	private Vector<Vector<String>> getWordGroups(Vector<Vector<Integer>> equivalenceClasses, char letter)
+	private ArrayList<ArrayList<String>> getWordGroups(ArrayList<ArrayList<Integer>> equivalenceClasses, char letter)
 	{		
-		Vector<Vector<String>> wordGroups = new Vector<Vector<String>>();			
+		ArrayList<ArrayList<String>> wordGroups = new ArrayList<ArrayList<String>>();			
 				
-		for (Vector<Integer> indices : equivalenceClasses)
+		for (ArrayList<Integer> indices : equivalenceClasses)
 		{			
-			Vector<String> matchedWords = new Vector<String>();			
+			ArrayList<String> matchedWords = new ArrayList<String>();			
 			
 			for (String word : words)
 			{
@@ -104,11 +99,11 @@ public class EvilGameplay extends Gameplay
 		return wordGroups;
 	}
 	
-	private void findLargestClass(Vector<Vector<String>> wordGroups, Vector<Vector<Integer>> equivalenceClasses, char letter)
+	private void findLargestClass(ArrayList<ArrayList<String>> wordGroups, ArrayList<ArrayList<Integer>> classes, char letter)
 	{
 		int maxValue = 0, id = 0;
 		
-		for (Vector<String> group : wordGroups)
+		for (ArrayList<String> group : wordGroups)
 		{
 			int sum = 0;
 			for (String word : group)			
@@ -134,7 +129,7 @@ public class EvilGameplay extends Gameplay
 		}
 		
 		StringBuilder updatedGuess = new StringBuilder(guess);
-		for (int index : equivalenceClasses.get(id))			
+		for (int index : classes.get(id))			
 			updatedGuess.setCharAt(index, letter);
 		
 		this.guess = updatedGuess.toString();

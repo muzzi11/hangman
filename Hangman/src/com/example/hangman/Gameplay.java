@@ -1,7 +1,6 @@
 package com.example.hangman;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Gameplay 
 {
