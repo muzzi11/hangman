@@ -3,17 +3,16 @@ Hangman
 
 Hangman is a native app for the Android platform. The app thinks of a word and the player tries to guess it by suggesting letters.
 
+----------
 
 How to get it up and running
-----------
+---------
 
 - Clone the repository: git clone git@github.com:muzzi11/hangman.git
 - Get Eclipse and the ADT plugin, see instructions here: http://developer.android.com/sdk/installing/installing-adt.html
 - Open the SDKManager and install the SDK Platform, system images and Google APIs for Android 4.2.2(API17)
 - Open Eclipse and choose a workspace folder that's different from the project folder
 - New > Project> Android > Android Project from Existing Code
-
-----------
 
 Features
 ---------
