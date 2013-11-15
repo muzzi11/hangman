@@ -1,24 +1,46 @@
 package com.example.hangman;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+
 import android.util.Log;
 
 public class EvilGameplay extends Gameplay
 {		
+	private Map<String, Integer> uniqueChars;
+	
 	public EvilGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{
 		super(words, length, tries, listener);		
 		
 		filterWords();
+		
+		uniqueChars = new HashMap<String, Integer>();
+		for (String word : words)
+			uniqueChars.put(word, getUniqueChars(word));
 	}
 	
 	@Override
 	public void guess(char letter)	
-	{					
+	{			
+		long start, end;
+		
+		start = System.currentTimeMillis();
 		ArrayList<ArrayList<Integer>> classes = getEquivalenceClasses(letter);
+		end = System.currentTimeMillis();
+		Log.d("Hangman", "" + (end - start));
+		
+		start = System.currentTimeMillis();
 		ArrayList<ArrayList<String>> wordGroups = getWordGroups(classes, letter);
+		end = System.currentTimeMillis();
+		Log.d("Hangman", "" + (end - start));
+		
+		start = System.currentTimeMillis();
 		findLargestClass(wordGroups, classes, letter);
+		end = System.currentTimeMillis();
+		Log.d("Hangman", "" + (end - start));		
 	}
 	
 	private void filterWords()
@@ -62,7 +84,7 @@ public class EvilGameplay extends Gameplay
 		}
 		return classes;
 	}
-	
+		
 	private ArrayList<ArrayList<String>> getWordGroups(ArrayList<ArrayList<Integer>> equivalenceClasses, char letter)
 	{		
 		ArrayList<ArrayList<String>> wordGroups = new ArrayList<ArrayList<String>>();			
@@ -89,12 +111,9 @@ public class EvilGameplay extends Gameplay
 				
 				if (isEqual)				
 					matchedWords.add(word);
-			}
-			for (String word : matchedWords)
-				words.remove(word);
-			
+			}			
 			wordGroups.add(matchedWords);			
-		}		
+		}
 		wordGroups.add(this.words);
 		return wordGroups;
 	}
@@ -107,7 +126,7 @@ public class EvilGameplay extends Gameplay
 		{
 			int sum = 0;
 			for (String word : group)			
-				sum += getUniqueChars(word);
+				sum += uniqueChars.get(word);
 			
 			if (sum > maxValue)
 			{
@@ -122,8 +141,7 @@ public class EvilGameplay extends Gameplay
 		listener.onGuess(!wrongGuess, letter);		
 	
 		if (wrongGuess)
-		{
-			Log.d("Handman", "" + this.tries);
+		{			
 			this.tries++;
 			return;
 		}
