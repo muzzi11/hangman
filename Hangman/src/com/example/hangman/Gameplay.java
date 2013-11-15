@@ -1,5 +1,6 @@
 package com.example.hangman;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Gameplay 
@@ -10,9 +11,9 @@ public class Gameplay
 	public int tries;	
 	public int length;
 	
-	public Vector<String> words;
+	public ArrayList<String> words;
 	
-	Gameplay(Vector<String> words, int length, int maxTries, GameplayListener listener)
+	Gameplay(ArrayList<String> words, int length, int maxTries, GameplayListener listener)
 	{
 		this.words = words;
 		this.length = length;

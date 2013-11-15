@@ -11,7 +11,7 @@ public class GoodGameplay extends Gameplay
 {
 	private String word;
 	
-	public GoodGameplay(Vector<String> words, int length, int tries, GameplayListener listener)
+	public GoodGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{
 		super(words, length, tries, listener);		
 		
