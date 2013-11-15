@@ -6,17 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Xml;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -78,8 +72,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     private void startGame()
     {        
-        //gameplay = new GoodGameplay(words, 5, 15, this);
-    	gameplay = new EvilGameplay(words, 5, 25, this);
+        gameplay = new GoodGameplay(words, 5, 15, this);
+    	//gameplay = new EvilGameplay(words, 5, 25, this);
     	updateProgess();
     }    
             
