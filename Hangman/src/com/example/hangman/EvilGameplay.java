@@ -50,7 +50,7 @@ public class EvilGameplay extends Gameplay
 			StringBuilder updatedGuess = new StringBuilder(guess);
 			for (int i = 0; c != 0; c = c >> 1, ++i)
 			{
-				if((c & 1) > 0) updatedGuess.setCharAt(i, letter);
+				if((c & 1) > 0) updatedGuess.setCharAt(guess.length() - 1 - i, letter);
 			}
 			guess = updatedGuess.toString();
 			
