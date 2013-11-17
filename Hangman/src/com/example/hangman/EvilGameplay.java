@@ -1,18 +1,15 @@
 package com.example.hangman;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import android.util.Log;
+import android.util.SparseIntArray;
 
 public class EvilGameplay extends Gameplay
-{		
-	private Map<String, Integer> uniqueChars;
+{
+	private ArrayList<String> words;
 	
 	public EvilGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{
-		super(words, length, tries, listener);		
+		super(length, tries, listener);		
 		
 		ArrayList<String> filteredWords = new ArrayList<String>();
 		for (String word : words)		
@@ -23,20 +20,20 @@ public class EvilGameplay extends Gameplay
 	@Override
 	public void guess(char letter)	
 	{			
-		long start, end;		
-		start = System.currentTimeMillis();
-		
+		boolean letterGuessed;
 		ArrayList<String> containLetter = new ArrayList<String>();
 		ArrayList<String> noContainLetter = new ArrayList<String>();
+		
 		for(String word : words)
 		{
 			if(word.indexOf(letter) != -1) containLetter.add(word);
 			else noContainLetter.add(word);
 		}
+		letterGuessed = containLetter.size() > noContainLetter.size();
 		
-		if(containLetter.size() > noContainLetter.size())
+		if(letterGuessed)
 		{
-			int c = getBestClass(containLetter, letter);
+			int c = getMostFrequentClass(containLetter, letter);
 			
 			// Filter all words that are not of the same class
 			ArrayList<String> newWords = new ArrayList<String>();
@@ -53,22 +50,23 @@ public class EvilGameplay extends Gameplay
 				if((c & 1) > 0) updatedGuess.setCharAt(guess.length() - 1 - i, letter);
 			}
 			guess = updatedGuess.toString();
-			
-			listener.onGuess(true, letter);
 		}
 		else
 		{
 			words = noContainLetter;
 			++tries;
-			listener.onGuess(false, letter);
 		}
+		
+		listener.onGuess(letterGuessed, letter);
 		if(finished()) listener.onWin(guess);
 		if(lost()) listener.onLose(guess);
-		
-		end = System.currentTimeMillis();
-		Log.d("Hangman", "" + (end - start));
 	}
 	
+	/*
+	 *  Returns an integer that represents the class of a word for a specific letter.
+	 *  The class of a word for a specific letter can be seen as the count and positions
+	 *  of the letter occurring in that word.
+	 */
 	private int classifyWord(String word, char letter)
 	{
 		int c = 0;
@@ -82,25 +80,29 @@ public class EvilGameplay extends Gameplay
 		return c;
 	}
 	
-	private int getBestClass(ArrayList<String> samples, char letter)
+	private int getMostFrequentClass(ArrayList<String> samples, char letter)
 	{
-		Map<Integer, Integer> classes = new HashMap<Integer, Integer>();
+		SparseIntArray classes = new SparseIntArray();
 		
 		// Count frequencies of classes
 		for(String sample : samples)
 		{
 			int c = classifyWord(sample, letter);
 			Integer freq = classes.get(c);
-			classes.put(c, freq == null ? 1 : freq + 1);
+			classes.put(c, freq + 1);
 		}
 		
 		// Find highest frequency
-		Map.Entry<Integer, Integer> maxEntry = null;
-		for(Map.Entry<Integer, Integer> entry : classes.entrySet())
+		int key = 0, maxFreq = 0;
+		for(int i = 0; i < classes.size(); ++i)
 		{
-			if(maxEntry == null || entry.getValue() > maxEntry.getValue()) maxEntry = entry;
+			if(classes.valueAt(i) > maxFreq)
+			{
+				key = classes.keyAt(i);
+				maxFreq = classes.valueAt(i);
+			}
 		}
 		
-		return maxEntry.getKey();
+		return key;
 	}
 }
