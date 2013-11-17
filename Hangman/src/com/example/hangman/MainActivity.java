@@ -74,10 +74,10 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {        
         //gameplay = new GoodGameplay(words, 5, 15, this);
     	gameplay = new EvilGameplay(words, 5, 25, this);
-    	updateProgess();
+    	updateProgress();
     }    
             
-    private void updateProgess()
+    private void updateProgress()
     {
     	String guess = gameplay.getGuess();
     	TextView text = (TextView)findViewById(R.id.hangmanProgress);
@@ -86,13 +86,9 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     public void onKeyPressed(char letter)
     {
-    	gameplay.guess(letter);    	
-    }   
-    
-    public void onGuess(Boolean success, char letter)
-    {
-    	keyboard.highlight(letter, success);
-    	updateProgess();
+    	boolean isCorrect = gameplay.guess(letter);
+    	keyboard.highlight(letter, isCorrect);
+    	updateProgress();
     }
     
     public void onLose(String word)

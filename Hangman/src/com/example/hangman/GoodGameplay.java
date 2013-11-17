@@ -29,7 +29,7 @@ public class GoodGameplay extends Gameplay
 	}
 		
 	@Override
-	public void guess(char letter)	
+	public boolean guess(char letter)	
 	{		
 		boolean letterGuessed = word.contains("" + letter);
 		
@@ -46,9 +46,10 @@ public class GoodGameplay extends Gameplay
 		{
 			tries++;
 		}
-			
-		listener.onGuess(letterGuessed, letter);
-		if (finished()) listener.onWin(word);
+		
+		if (won()) listener.onWin(word);
 		else if (lost()) listener.onLose(word);
+		
+		return letterGuessed;
 	}
 }

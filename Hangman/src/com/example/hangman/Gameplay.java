@@ -31,16 +31,18 @@ public class Gameplay
 		return tries;
 	}
 	
-	public void guess(char letter)
-	{		
+	// Returns true if the letter was correctly guessed, false otherwise.
+	public boolean guess(char letter)
+	{
+		return false;
 	}	
 	
-	public Boolean finished()
+	public boolean won()
 	{
 		return !guess.contains("-");
 	}
 	
-	public Boolean lost()
+	public boolean lost()
 	{
 		return tries >= maxTries;
 	}

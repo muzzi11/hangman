@@ -18,7 +18,7 @@ public class EvilGameplay extends Gameplay
 	}
 	
 	@Override
-	public void guess(char letter)	
+	public boolean guess(char letter)	
 	{			
 		boolean letterGuessed;
 		ArrayList<String> containLetter = new ArrayList<String>();
@@ -56,10 +56,11 @@ public class EvilGameplay extends Gameplay
 			words = noContainLetter;
 			++tries;
 		}
-		
-		listener.onGuess(letterGuessed, letter);
-		if(finished()) listener.onWin(guess);
-		if(lost()) listener.onLose(guess);
+
+		if(won()) listener.onWin(guess);
+		else if(lost()) listener.onLose(guess);
+
+		return letterGuessed;
 	}
 	
 	/*
