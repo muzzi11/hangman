@@ -45,7 +45,7 @@ public class VirtualKeyboard
 		listener.onKeyPressed(letter);
 	}
 	
-	public void highlight(char letter, Boolean isCorrect)
+	public void highlight(char letter, boolean isCorrect)
 	{
 		Button button = buttons.get(letter);
 		

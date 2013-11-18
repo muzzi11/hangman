@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,8 +24,10 @@ import com.example.hangman.DialogListener;
 
 public class MainActivity extends Activity implements GameplayListener, KeyboardListener, DialogListener
 {
+	private RenderTarget renderTarget;
 	private VirtualKeyboard keyboard;
 	private Gameplay gameplay;
+	private Gallows gallows;
 	
 	private ArrayList<String> words = new ArrayList<String>();	
 	
@@ -33,7 +36,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {   				
         super.onCreate(savedInstanceState);       
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);        
+        setContentView(R.layout.activity_main);
     }
     
     @Override
@@ -50,7 +53,23 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	drawables[2] = resources.getDrawable(android.R.drawable.bottom_bar);
     	keyboard = new VirtualKeyboard(getKeyboardButtons(), drawables, this);
     	
+    	gallows = new Gallows();
+    	gallows.loadAssets(getAssets());
+    	
+    	renderTarget = (RenderTarget) findViewById(R.id.surfaceView1);
+    	renderTarget.setGallows(gallows);
+    	
+    	Log.d("HM", Long.toString(Runtime.getRuntime().maxMemory() / 1024));
+    	Log.d("HM", Long.toString(Runtime.getRuntime().totalMemory() / 1024));
+    	
     	startGame();
+    }
+    
+    @Override
+    protected void onPause()
+    {
+    	super.onPause();
+    	renderTarget.pause();
     }
     
     private HashMap<Character, Button> getKeyboardButtons()
@@ -73,7 +92,9 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     private void startGame()
     {        
         //gameplay = new GoodGameplay(words, 5, 15, this);
-    	gameplay = new EvilGameplay(words, 5, 25, this);
+    	gameplay = new EvilGameplay(words, 5, 20, this);
+    	gallows.setMaxSteps(20);
+    	gallows.reset();
     	updateProgress();
     }    
             
@@ -88,6 +109,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {
     	boolean isCorrect = gameplay.guess(letter);
     	keyboard.highlight(letter, isCorrect);
+    	if(!isCorrect) gallows.nextStep();
     	updateProgress();
     }
     
