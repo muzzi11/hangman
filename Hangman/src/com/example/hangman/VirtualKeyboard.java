@@ -1,9 +1,14 @@
 package com.example.hangman;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 public class VirtualKeyboard
@@ -14,20 +19,21 @@ public class VirtualKeyboard
 	private Drawable normal;
 	private KeyboardListener listener;
 	
-	public VirtualKeyboard(Map<Character, Button> buttons, Drawable[] buttonStates, KeyboardListener listener)
-	{
-		this.correct = buttonStates[0];
-		this.incorrect = buttonStates[1];
-		this.normal = buttonStates[2];
-		this.buttons = buttons;
-		this.listener = listener;
-		
+	public VirtualKeyboard(Activity activity, KeyboardListener listenerIn)
+	{	    	
+		Resources resources = activity.getResources();
+    	correct = resources.getDrawable(R.drawable.correct_guess_selector);
+    	incorrect = resources.getDrawable(R.drawable.incorrect_guess);
+    	normal = resources.getDrawable(android.R.drawable.bottom_bar);
+    	buttons = getKeyboardButtons(activity);
+    	listener = listenerIn;
+    	
 		for (Button button : buttons.values())
 		{
 			button.setOnClickListener(new View.OnClickListener() 
 			{				
 				@Override
-				public void onClick(View view) 
+				public void onClick(View view)
 				{					 
 					onTouch(view);
 				}
@@ -63,4 +69,18 @@ public class VirtualKeyboard
 			button.setEnabled(true);
 		}
 	}
+	
+	private HashMap<Character, Button> getKeyboardButtons(Activity activity)
+    {
+		Resources resources = activity.getResources();
+    	HashMap<Character, Button> buttons = new HashMap<Character, Button>();
+    	
+    	for (char letter = 'A'; letter <= 'Z'; letter++)
+		{    		    		
+			int resourceID = resources.getIdentifier("Key" + letter, "id", activity.getPackageName());			
+			Button button = (Button) activity.findViewById(resourceID);			
+			buttons.put(letter, button);			
+		}    	
+        return buttons;
+    }
 }

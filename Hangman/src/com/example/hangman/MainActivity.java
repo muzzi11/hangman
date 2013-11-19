@@ -45,13 +45,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	super.onStart();
     	
     	loadWords();
-    	
-    	Resources resources = getResources();
-    	Drawable[] drawables = new Drawable[3];
-    	drawables[0] = resources.getDrawable(R.drawable.correct_guess_selector);
-    	drawables[1] = resources.getDrawable(R.drawable.incorrect_guess);
-    	drawables[2] = resources.getDrawable(android.R.drawable.bottom_bar);
-    	keyboard = new VirtualKeyboard(getKeyboardButtons(), drawables, this);
+    	    	
+    	keyboard = new VirtualKeyboard(this, this);
     	
     	gallows = new Gallows();
     	gallows.loadAssets(getAssets());
@@ -71,19 +66,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	super.onPause();
     	renderTarget.pause();
     }
-    
-    private HashMap<Character, Button> getKeyboardButtons()
-    {
-    	HashMap<Character, Button> buttons = new HashMap<Character, Button>();
-    	for (char letter = 'A'; letter <= 'Z'; letter++)
-		{    		    		
-			int resourceID = getResources().getIdentifier("Key" + letter, "id", getPackageName());			
-			Button button = (Button) findViewById(resourceID);			
-			buttons.put(letter, button);			
-		}    	
-        return buttons;
-    }
-    
+            
     // Load previous game settings
     private void load()
     {
