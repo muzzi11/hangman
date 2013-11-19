@@ -1,5 +1,7 @@
 package com.example.hangman;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,7 +17,7 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 	{
 		private SurfaceHolder surfaceHolder;
 		private RenderTarget renderTarget;
-		private boolean run = false;
+		private AtomicBoolean run = new AtomicBoolean(false);
 		private int width, height;
 		
 		public RenderThread(SurfaceHolder surfaceHolder, RenderTarget renderTarget)
@@ -26,7 +28,7 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 		
 		public void setRunning(boolean state)
 		{
-			run = state;
+			run.set(state);
 		}
 		
 		@Override
@@ -34,23 +36,31 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 		{
 			Canvas canvas;
 			
-			while(run)
+			while(run.get())
 			{
 				canvas = null;
 				
-				try
+				synchronized (surfaceHolder)
 				{
-					canvas = surfaceHolder.lockCanvas();
-					synchronized (surfaceHolder)
+					if(!surfaceHolder.getSurface().isValid()) return;
+					
+					try
 					{
+						canvas = surfaceHolder.lockCanvas();
+						
 						canvas.drawColor(Color.BLUE);
-						canvas.drawCircle(50, 50, 50, new Paint());
+						
+						if(renderTarget.gallows != null)
+						{
+							renderTarget.gallows.draw(canvas);
+						}
+						
 						renderTarget.postInvalidate();
 					}
-				}
-				finally
-				{
-					if(canvas != null) surfaceHolder.unlockCanvasAndPost(canvas);
+					finally
+					{
+						if(canvas != null) surfaceHolder.unlockCanvasAndPost(canvas);
+					}
 				}
 			}
 		}
@@ -66,11 +76,41 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 	}
 	
 	private RenderThread thread;
+	private Gallows gallows = null;
 	
 	public RenderTarget(Context context, AttributeSet attributeSet)
 	{
 		super(context, attributeSet);
 		getHolder().addCallback(this);
+		thread = new RenderThread(getHolder(), this);
+	}
+	
+	public void setGallows(Gallows gallows)
+	{
+		synchronized (thread.surfaceHolder)
+		{
+			this.gallows = gallows;
+		}
+	}
+	
+	public void pause()
+	{
+		thread.setRunning(false);
+		
+		try
+		{
+			thread.join();
+		}
+		catch(InterruptedException e)
+		{
+			Log.e("RenderTarget", e.getMessage());
+		}
+	}
+	
+	public void resume()
+	{
+		thread.setRunning(true);
+		thread.start();
 	}
 
 	@Override
@@ -83,22 +123,12 @@ public class RenderTarget extends SurfaceView implements SurfaceHolder.Callback
 	public void surfaceCreated(SurfaceHolder holder)
 	{
 		setWillNotDraw(false);
-		thread = new RenderThread(holder, this);
-		thread.setRunning(true);
-		thread.start();
+		resume();
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder)
 	{
-		try
-		{
-			thread.setRunning(false);
-			thread.join();
-		}
-		catch(InterruptedException e)
-		{
-			Log.e("RenderTarget", e.getMessage());
-		}
+		pause();
 	}
 }

@@ -1,20 +1,15 @@
 package com.example.hangman;
 
-import java.util.ArrayList;
-
 public class Gameplay 
 {
-	public String guess;
-	public GameplayListener listener;
-	public int maxTries;
-	public int tries;	
-	public int length;
+	protected String guess;
+	protected GameplayListener listener;
+	protected int maxTries;
+	protected int tries;	
+	protected int length;
 	
-	public ArrayList<String> words;
-	
-	Gameplay(ArrayList<String> words, int length, int maxTries, GameplayListener listener)
+	Gameplay(int length, int maxTries, GameplayListener listener)
 	{
-		this.words = words;
 		this.length = length;
 		this.maxTries = maxTries;		
 		this.listener = listener;
@@ -36,16 +31,18 @@ public class Gameplay
 		return tries;
 	}
 	
-	public void guess(char letter)
-	{		
+	// Returns true if the letter was correctly guessed, false otherwise.
+	public boolean guess(char letter)
+	{
+		return false;
 	}	
 	
-	public Boolean finished()
+	public boolean won()
 	{
 		return !guess.contains("-");
 	}
 	
-	public Boolean lost()
+	public boolean lost()
 	{
 		return tries >= maxTries;
 	}
