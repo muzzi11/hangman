@@ -11,21 +11,37 @@ public class EvilGameplay extends Gameplay
 {		
 	private Map<String, Integer> uniqueChars;
 	
+	private ArrayList<String> notMatching;
+	private ArrayList<String> matching;
+	
 	public EvilGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{
 		super(words, length, tries, listener);		
 		
 		filterWords();
-		
+				
+		long start = System.currentTimeMillis();
 		uniqueChars = new HashMap<String, Integer>();
 		for (String word : words)
 			uniqueChars.put(word, getUniqueChars(word));
+		long end = System.currentTimeMillis();
+		Log.d("Hangman", "uniq: " + (end - start));		
 	}
 	
 	@Override
 	public void guess(char letter)	
 	{			
 		long start, end;
+		
+		notMatching = new ArrayList<String>();
+		matching = new ArrayList<String>();
+		for (String word : words)
+		{
+			if (word.contains("" + letter))
+				matching.add(word);
+			else
+				notMatching.add(word);				
+		}
 		
 		start = System.currentTimeMillis();
 		ArrayList<ArrayList<Integer>> classes = getEquivalenceClasses(letter);
@@ -57,7 +73,7 @@ public class EvilGameplay extends Gameplay
 	{
 		ArrayList<ArrayList<Integer>> classes = new ArrayList<ArrayList<Integer>>();
 		
-		for (String word : words)
+		for (String word : matching)
 		{
 			if (word.contains("" + letter))
 			{				
@@ -78,7 +94,7 @@ public class EvilGameplay extends Gameplay
 							counter++;												 
 					}		
 					if (counter == definition.size()) isUnique = false;
-				}				
+				}						
 				if (isUnique) classes.add(indices);				
 			}			
 		}
@@ -93,7 +109,7 @@ public class EvilGameplay extends Gameplay
 		{			
 			ArrayList<String> matchedWords = new ArrayList<String>();			
 			
-			for (String word : words)
+			for (String word : matching)
 			{
 				boolean isEqual = true;
 				
@@ -111,10 +127,10 @@ public class EvilGameplay extends Gameplay
 				
 				if (isEqual)				
 					matchedWords.add(word);
-			}			
+			}        
 			wordGroups.add(matchedWords);			
-		}
-		wordGroups.add(this.words);
+		}		
+		wordGroups.add(notMatching);
 		return wordGroups;
 	}
 	
