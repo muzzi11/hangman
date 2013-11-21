@@ -8,18 +8,6 @@ import android.view.MotionEvent;
 
 public class GameSurfaceView extends GLSurfaceView
 {
-	public GameSurfaceView(Context context)
-	{
-		super(context);
-		
-		// Create an OpenGL ES 2.0 context
-		setEGLContextClientVersion(2);
-		
-		// Make surface translucent
-		setEGLConfigChooser(8, 8, 8, 8, 0, 0);
-		getHolder().setFormat(PixelFormat.TRANSLUCENT);
-	}
-	
 	public GameSurfaceView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
@@ -30,6 +18,8 @@ public class GameSurfaceView extends GLSurfaceView
 		// Make surface translucent
 		setEGLConfigChooser(8, 8, 8, 8, 0, 0);
 		getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		
+		setPreserveEGLContextOnPause(true);
 	}
 
 	@Override

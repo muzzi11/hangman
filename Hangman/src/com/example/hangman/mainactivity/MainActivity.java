@@ -85,7 +85,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     private void startGame()
-    {        
+    {
+    	keyboard.reset();
         //gameplay = new GoodGameplay(words, 5, 15, this);
     	gameplay = new EvilGameplay(words, 5, 25, this);
     	gallows.setMaxSteps(20);
@@ -125,15 +126,16 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	history.score(word, tries);
     }    
     
+    @Override
     public void onHighscoreSelect()
     {    
     	Intent intent = new Intent(this, HighScoreActivity.class);
     	startActivity(intent);
     }
     
+    @Override
     public void onNewGame()
     {
-    	keyboard.reset();
     	startGame();    
     } 
     
