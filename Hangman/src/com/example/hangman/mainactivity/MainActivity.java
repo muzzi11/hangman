@@ -48,7 +48,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {
     	super.onStart();
     	
-    	loadWords();
+    	loadWords(9);
     	
     	history = new History(this);
     	
@@ -81,7 +81,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     private void startGame()
     {        
         //gameplay = new GoodGameplay(words, 5, 15, this);
-    	gameplay = new EvilGameplay(words, 5, 25, this);
+    	gameplay = new EvilGameplay(words, 9, 25, this);
     	gallows.setMaxSteps(20);
     	gallows.reset();
     	updateProgress();
@@ -131,11 +131,11 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	startGame();    
     } 
     
-    private void loadWords()
+    private void loadWords(int length)
     {
     	try
     	{
-    		InputStream stream = getAssets().open("words.txt");
+    		InputStream stream = getAssets().open("words" + length + ".txt");
     		InputStreamReader inputStreamReader = new InputStreamReader(stream);
     		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
     		
