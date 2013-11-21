@@ -47,7 +47,7 @@ public class GoodGameplay extends Gameplay
 			tries++;
 		}
 		
-		if (won()) listener.onWin(word);
+		if (won()) listener.onWin(word, tries);
 		else if (lost()) listener.onLose(word);
 		
 		return letterGuessed;

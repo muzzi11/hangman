@@ -44,7 +44,7 @@ public class EvilGameplay extends Gameplay
         else                	
             ++tries;                
 
-        if(won()) listener.onWin(guess);
+        if(won()) listener.onWin(guess, tries);
         else if(lost()) listener.onLose(guess);
         
         return containsLetter;

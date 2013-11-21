@@ -1,9 +1,11 @@
 package com.example.hangman.highscoreactivity;
 
 import com.example.hangman.history.History;
+import com.example.hangman.mainactivity.MainActivity;
 
 import com.example.hangman.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -31,6 +33,13 @@ public class HighScoreActivity extends Activity {
 	{
 	    super.onCreate(savedInstanceState);	
 	    setContentView(R.layout.highscore);
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		Intent intent = new Intent(this, MainActivity.class);
+    	startActivity(intent);
 	}
 
 }
