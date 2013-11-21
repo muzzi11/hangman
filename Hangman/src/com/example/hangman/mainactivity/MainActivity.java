@@ -13,11 +13,12 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.example.hangman.R;
-import com.example.hangman.animation.Gallows;
-import com.example.hangman.animation.RenderTarget;
 import com.example.hangman.gameplay.EvilGameplay;
 import com.example.hangman.gameplay.Gameplay;
 import com.example.hangman.gameplay.GameplayListener;
+import com.example.hangman.graphics.GLRenderer;
+import com.example.hangman.graphics.Gallows;
+import com.example.hangman.graphics.GameSurfaceView;
 import com.example.hangman.highscoreactivity.HighScoreActivity;
 import com.example.hangman.history.History;
 import com.example.hangman.mainactivity.DialogListener;
@@ -27,11 +28,13 @@ import com.example.hangman.virtualkeyboard.VirtualKeyboard;
 
 public class MainActivity extends Activity implements GameplayListener, KeyboardListener, DialogListener
 {
-	private RenderTarget renderTarget;
+	//private RenderTarget renderTarget;
 	private VirtualKeyboard keyboard;
 	private Gameplay gameplay;
 	private Gallows gallows;
 	private History history;
+	private GameSurfaceView gameSurfaceView;
+	private GLRenderer renderer;
 	
 	private ArrayList<String> words = new ArrayList<String>();	
 	
@@ -39,30 +42,25 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     protected void onCreate(Bundle savedInstanceState) 
     {   				
         super.onCreate(savedInstanceState);       
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        
+        loadWords();
+        gallows = new Gallows();
+        
+        gameSurfaceView = (GameSurfaceView) findViewById(R.id.surfaceView1);
+        renderer = new GLRenderer(getAssets(), gallows);
+        
+        gameSurfaceView.setRenderer(renderer);
+        
+        history = new History(this);
+        keyboard = new VirtualKeyboard(this, this);
     }
     
     @Override
     protected void onStart()
     {
     	super.onStart();
-    	
-    	loadWords();
-    	
-    	history = new History(this);
-    	
-    	keyboard = new VirtualKeyboard(this, this);
-    	
-    	gallows = new Gallows();
-    	gallows.loadAssets(getAssets());
-    	
-    	renderTarget = (RenderTarget) findViewById(R.id.surfaceView1);
-    	renderTarget.setGallows(gallows);
-    	
-    	Log.d("HM", Long.toString(Runtime.getRuntime().maxMemory() / 1024));
-    	Log.d("HM", Long.toString(Runtime.getRuntime().totalMemory() / 1024));
-    	
     	startGame();
     }
     
@@ -70,7 +68,15 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     protected void onPause()
     {
     	super.onPause();
-    	renderTarget.pause();
+    	//renderTarget.pause();
+    	gameSurfaceView.onPause();
+    }
+    
+    @Override
+    protected void onResume()
+    {
+    	super.onResume();
+    	gameSurfaceView.onResume();
     }
             
     // Load previous game settings

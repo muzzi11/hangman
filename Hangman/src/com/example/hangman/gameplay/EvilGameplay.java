@@ -2,7 +2,6 @@ package com.example.hangman.gameplay;
 
 import java.util.ArrayList;
 
-import android.util.Log;
 import android.util.SparseIntArray;
 
 public class EvilGameplay extends Gameplay
