@@ -1,6 +1,7 @@
 package com.example.hangman.history;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import android.app.Activity;
@@ -23,9 +26,11 @@ public class History
 	{
 		load(activity);
 		
-		try {
-			outStream = activity.openFileOutput("scores.txt", activity.MODE_PRIVATE);
-		} catch (FileNotFoundException e) {
+		try 
+		{
+			outStream = activity.openFileOutput("scores.txt", activity.MODE_APPEND);
+		} catch (FileNotFoundException e) 
+		{
 			Log.e("loadOutputstream", e.getMessage());
 		}
 	}
@@ -35,17 +40,19 @@ public class History
 		scores = new ArrayList<String>();
 		try
     	{
-    		InputStream stream = activity.getAssets().open("scores.txt");
+    		InputStream stream = activity.openFileInput("scores.txt");
     		InputStreamReader inputStreamReader = new InputStreamReader(stream);
     		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
     		
-    		String line;
+    		String line;    		
     		while((line = bufferedReader.readLine()) != null)
     		{
     			scores.add(line);
     		}
     		
     		bufferedReader.close();
+    		Collections.sort(scores);
+    		Collections.reverse(scores);
     	}
     	catch(IOException e)
     	{
@@ -58,8 +65,10 @@ public class History
 		try
 		{
 			OutputStreamWriter stream = new OutputStreamWriter(outStream);
-			stream.write("" + score);
-			stream.close();
+			BufferedWriter writer = new BufferedWriter(stream); 
+			writer.write("" + score);
+			writer.newLine();
+			writer.close();
 		}
 		catch(IOException e)
     	{
@@ -67,9 +76,10 @@ public class History
     	}
 	}
 	
-	public void Score(String word, int tries)
+	public void score(String word, int tries)
 	{
-		int score = (getUniqueChars(word) / tries) * 1000;
+		int score = (int)(((float)getUniqueChars(word) / (float)tries) * 1000.0f);
+		Log.d("Hangman", "Score: " + score);
 		save(score);
 	}
 	

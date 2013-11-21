@@ -110,12 +110,13 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	dialog.show(getFragmentManager(), "Hangman");
     }
     
-    public void onWin(String word)
+    public void onWin(String word, int tries)
     {    
     	WinDialog dialog = new WinDialog();
     	dialog.setListener(this);
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
+    	history.score(word, tries);
     }    
     
     public void onHighscoreSelect()
