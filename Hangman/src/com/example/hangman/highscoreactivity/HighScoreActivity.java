@@ -23,7 +23,7 @@ public class HighScoreActivity extends Activity {
 		history = new History(this);
 		
 		ListView listView = (ListView) findViewById(R.id.scores);
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.score, history.scores);
+		ArrayAdapter<Integer> arrayAdapter = new ArrayAdapter<Integer>(this, R.layout.score, history.scores);
 		listView.setAdapter(arrayAdapter);
 	}
 	

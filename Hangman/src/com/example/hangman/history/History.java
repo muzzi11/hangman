@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -18,7 +17,7 @@ import android.util.Log;
 
 public class History 
 {
-	public ArrayList<String> scores;
+	public ArrayList<Integer> scores;
 	
 	private OutputStream outStream;
 	
@@ -37,7 +36,7 @@ public class History
 	
 	private void load(Activity activity)
 	{
-		scores = new ArrayList<String>();
+		scores = new ArrayList<Integer>();
 		try
     	{
     		InputStream stream = activity.openFileInput("scores.txt");
@@ -47,12 +46,21 @@ public class History
     		String line;    		
     		while((line = bufferedReader.readLine()) != null)
     		{
-    			scores.add(line);
+    			scores.add(Integer.parseInt(line));
     		}
     		
     		bufferedReader.close();
     		Collections.sort(scores);
     		Collections.reverse(scores);
+    		/*
+    		 Collections.sort(scores, new Comparator<Integer>() 
+			{
+    			@Override
+    			public int compare(Integer i, Integer k){
+    				return i > k ? i : k;
+    			}			
+			});
+    		 */
     	}
     	catch(IOException e)
     	{
