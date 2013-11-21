@@ -18,8 +18,8 @@
         <activity
             android:name="com.example.hangman.mainactivity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme" >
+            android:label="@string/app_name"            
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,6 +29,7 @@
         <activity            
             android:name="com.example.hangman.highscoreactivity.HighScoreActivity">            
         </activity>
+        <activity android:name="com.example.hangman.settingsactivity.SettingsActivity"></activity>
         
     </application>
 
