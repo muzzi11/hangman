@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
-import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 public class History 
@@ -21,25 +21,25 @@ public class History
 	
 	private OutputStream outStream;
 	
-	public History(Activity activity)
+	public History(Context context)
 	{
-		load(activity);
+		load(context);
 		
 		try 
 		{
-			outStream = activity.openFileOutput("scores.txt", activity.MODE_APPEND);
+			outStream = context.openFileOutput("scores.txt", Context.MODE_APPEND);
 		} catch (FileNotFoundException e) 
 		{
 			Log.e("loadOutputstream", e.getMessage());
 		}
 	}
 	
-	private void load(Activity activity)
+	private void load(Context context)
 	{
 		scores = new ArrayList<Integer>();
 		try
     	{
-    		InputStream stream = activity.openFileInput("scores.txt");
+    		InputStream stream = context.openFileInput("scores.txt");
     		InputStreamReader inputStreamReader = new InputStreamReader(stream);
     		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
     		
