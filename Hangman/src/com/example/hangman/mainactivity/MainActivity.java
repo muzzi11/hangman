@@ -184,6 +184,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	tries.setText("" + (maxTries - gameplay.getTries()));
     }
     
+    @Override
     public void onKeyPressed(char letter)
     { 	
     	boolean isCorrect = gameplay.guess(letter);    	    	    	
@@ -201,6 +202,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	updateProgress();
     }
     
+    @Override
     public void onLose(String word)
     {       	
     	audio.play(this, AudioManager.LOSE);
@@ -210,14 +212,16 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	dialog.show(getFragmentManager(), "Hangman");    	    	
     }
     
+    @Override
     public void onWin(String word, int tries)
-    {       	
+    {
+    	int score = history.score(word, tries, gameplay.getMaxTries());
     	audio.play(this, AudioManager.WIN);    	
     	gameState.reset(settings);
     	
-    	WinDialog dialog = new WinDialog(this, word);    	
+    	WinDialog dialog = new WinDialog(this, word, score);    	
     	dialog.show(getFragmentManager(), "Hangman");
-    	history.score(word, tries);
+    	
     }    
     
     @Override
