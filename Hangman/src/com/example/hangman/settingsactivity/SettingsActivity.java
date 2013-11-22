@@ -1,70 +1,103 @@
 package com.example.hangman.settingsactivity;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.CheckBox;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
+import android.widget.RadioButton;
 
 import com.example.hangman.R;
+import com.example.hangman.mainactivity.MainActivity;
+import com.example.hangman.settings.Settings;
 
-public class SettingsActivity extends Activity {
-	private boolean isEvil;
-	private int maxTries;
-	private int wordLength;
+public class SettingsActivity extends Activity 
+{
+	Settings settings;
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    
-	    setContentView(R.layout.settings);
-	}
-	
-	private void load()
-	{	
-		try
-    	{
-    		InputStream stream = openFileInput("settings.txt");
-    		InputStreamReader inputStreamReader = new InputStreamReader(stream);
-    		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-    		
-    		isEvil = Boolean.parseBoolean(bufferedReader.readLine());
-    		maxTries = Integer.parseInt(bufferedReader.readLine());
-    		wordLength = Integer.parseInt(bufferedReader.readLine());
-    	}
-    	catch(IOException e)
-    	{
-    		Log.e("loadScores", e.getMessage());
-    	}
-	}
-	
-	private void save()
+	public void onCreate(Bundle savedInstanceState) 
 	{
-		try
-		{
-			OutputStream outStream = openFileOutput("scores.txt", MODE_PRIVATE);
-			OutputStreamWriter stream = new OutputStreamWriter(outStream);
-			BufferedWriter writer = new BufferedWriter(stream); 
-			writer.write("" + isEvil);
-			writer.newLine();
-			writer.write(maxTries);
-			writer.newLine();
-			writer.write(wordLength);
-			writer.newLine();
-			writer.close();
-		}
-		catch(IOException e)
-    	{
-    		Log.e("saveScore", e.getMessage());
-    	}
+	    super.onCreate(savedInstanceState);
+	    setContentView(R.layout.settings);
+	    
+	    settings = new Settings(this);   
+	    initialize();
+	}		
+			
+	private void initialize()
+	{
+		final TextView tries = (TextView) findViewById(R.id.textMaxTries);
+	    final TextView length = (TextView) findViewById(R.id.textWordLength);
+	    
+	    tries.setText("" + settings.maxTries);
+	    length.setText("" + settings.wordLength);
+	    
+	    final SeekBar seekBarTries = (SeekBar) findViewById(R.id.seekBarTries);
+	    final SeekBar seekBarLength = (SeekBar) findViewById(R.id.seekBarWordLength);
+	    	    	  
+	    seekBarTries.setProgress(settings.maxTries);
+	    seekBarLength.setProgress(settings.wordLength); 
+	    
+	    seekBarTries.setOnSeekBarChangeListener(new OnSeekBarChangeListener() 
+	    {			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) 
+			{			
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) 
+			{	
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) 
+			{
+				tries.setText("" + progress);
+				settings.maxTries = progress;
+				settings.save();
+			}
+		});
+	    
+	    seekBarLength.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+	    {			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) 
+			{				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) 
+			{				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) 
+			{
+				length.setText("" + progress);
+				settings.wordLength = progress;
+				settings.save();
+			}
+	    });	
+	    
+	    CheckBox mode = (CheckBox) findViewById(R.id.checkBoxMode);
+	    mode.setChecked(settings.isEvil);
+	    mode.setOnClickListener(new OnClickListener() 
+	    {			
+			@Override
+			public void onClick(View v) 
+			{
+				settings.isEvil = ((CheckBox) v).isChecked();
+				settings.save();
+			}
+		});
 	}
-
 }

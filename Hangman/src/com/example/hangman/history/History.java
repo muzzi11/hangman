@@ -50,6 +50,9 @@ public class History
     		}
     		
     		bufferedReader.close();
+    		inputStreamReader.close();
+    		stream.close();
+    		
     		Collections.sort(scores);
     		Collections.reverse(scores);    		
     	}
@@ -68,6 +71,8 @@ public class History
 			writer.write("" + score);
 			writer.newLine();
 			writer.close();
+			stream.close();
+			outStream.close();
 		}
 		catch(IOException e)
     	{

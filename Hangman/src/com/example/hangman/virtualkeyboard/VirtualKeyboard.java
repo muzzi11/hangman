@@ -26,9 +26,7 @@ public class VirtualKeyboard
 	
 	public VirtualKeyboard(Activity activity, KeyboardListener listenerIn)
 	{	    	
-		Resources resources = activity.getResources();
-    	correct = resources.getDrawable(R.drawable.correct_guess_selector);
-    	incorrect = resources.getDrawable(R.drawable.incorrect_guess);
+		Resources resources = activity.getResources();    	
     	normal = resources.getDrawable(android.R.drawable.bottom_bar);
     	buttons = getKeyboardButtons(activity);
     	listener = listenerIn;
