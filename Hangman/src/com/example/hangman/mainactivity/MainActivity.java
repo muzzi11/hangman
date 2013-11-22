@@ -34,6 +34,7 @@ import com.example.hangman.virtualkeyboard.KeyboardListener;
 import com.example.hangman.virtualkeyboard.VirtualKeyboard;
 import com.example.hangman.settings.Settings;
 import com.example.hangman.settingsactivity.*;
+import com.example.hangman.audio.*;
 
 public class MainActivity extends Activity implements GameplayListener, KeyboardListener, DialogListener
 {
@@ -53,6 +54,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private Settings settings;
 	private GameState gameState;
 
+	private AudioManager audio;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -81,20 +83,22 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         replaySavedGame();
                 
         ImageButton settingsButton = (ImageButton) findViewById(R.id.settings);
-        settingsButton.setOnClickListener(new OnClickListener() {
-			
+        settingsButton.setOnClickListener(new OnClickListener()
+        {
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
 		    	startActivity(intent);	
 			}
 		});
         
         ImageButton newGameButton = (ImageButton) findViewById(R.id.newGame);
-        newGameButton.setOnClickListener(new OnClickListener() {
-			
+        newGameButton.setOnClickListener(new OnClickListener()
+        {
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				startGame();
 			}
 		});
@@ -136,6 +140,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	}
     	gameState.save(this);
     	gameSurfaceView.onPause();
+    	audio.stop();
     }
     
     @Override
@@ -182,8 +187,18 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	gameState.updateState(letter);
     	
     	keyboard.highlight(letter, isCorrect);
-    	if(!isCorrect) gallows.nextStep();
-    	
+
+    	audio.stop();
+    	if(!isCorrect)
+		{ 
+    		audio.play(this, AudioManager.HAMMER);
+    		gallows.nextStep();
+		}
+    	else
+    	{
+    		audio.play(this, AudioManager.CORRECT);
+    	}
+
     	updateProgress();
     }
     
@@ -192,19 +207,10 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	// reset our game state, don't want to lose again if we load back in
     	gameState.reset(settings);
     	
+    	audio.play(this, AudioManager.LOSE);
+    	
     	LoseDialog dialog = new LoseDialog(word, this);
     	dialog.show(getFragmentManager(), "Hangman");
-    	
-    	// Play lose sound
-    	MediaPlayer mp = MediaPlayer.create(this, R.raw.loser);
-    	mp.setOnCompletionListener(new OnCompletionListener() {
-			
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				mp.release();				
-			}
-		});
-        mp.start();
     }
     
     public void onWin(String word, int tries)
@@ -212,20 +218,11 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	// reset our game state, don't want to lose again if we load back in
     	gameState.reset(settings);
     	
+    	audio.play(this, AudioManager.WIN);
+    	
     	WinDialog dialog = new WinDialog(word, this);
     	dialog.show(getFragmentManager(), "Hangman");
     	history.score(word, tries);
-    	
-    	// Play victory sound
-    	MediaPlayer mp = MediaPlayer.create(this, R.raw.winner);
-    	mp.setOnCompletionListener(new OnCompletionListener() {
-			
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				mp.release();				
-			}
-		});
-        mp.start();
     }    
     
     @Override
@@ -256,8 +253,10 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     private void loadWords(int length)
     {
+    	words = new ArrayList<String>();
     	try
     	{
+    		Log.d("Hangman", "Opening file: " + "words" + length + ".txt");
     		InputStream stream = getAssets().open("words" + length + ".txt");
     		InputStreamReader inputStreamReader = new InputStreamReader(stream);
     		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);

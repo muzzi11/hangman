@@ -20,8 +20,8 @@ public class WinDialog extends DialogFragment
 	
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) 
-    {
-        // Use the Builder class for convenient dialog construction
+    {      
+        // Use the Builder class for convenient dialog construction    	
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Congratulations! You have guessed: " + word + ". Want to play again?")
                .setPositiveButton("New game", new DialogInterface.OnClickListener() 
@@ -35,7 +35,7 @@ public class WinDialog extends DialogFragment
                {
                    public void onClick(DialogInterface dialog, int id) 
                    {
-                       listener.onHighscoreSelect();
+                       listener.onHighscoreSelect();                       
                    }
                });        
         return builder.create();
