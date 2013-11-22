@@ -13,7 +13,6 @@ How to get it up and running
 - Open the SDKManager and install the SDK Platform, system images and Google APIs for Android 4.2.2(API17)
 - Open Eclipse and choose a workspace folder that's different from the project folder
 - New > Project> Android > Android Project from Existing Code
-- Right click on Hangman in the package explorer and select Build Path > Link Source and browse to the AndEngine-GLES2/src folder located in the cloned folder. Set the folder name to AndEngine_src.
 
 Features
 ---------
@@ -27,14 +26,14 @@ Features
 - If the user guesses every letter in some word before running out of chances, he or she will be congratulated, and gameplay should end (i.e., the game should ignore any subsequent keyboard input). If the user fails to guess every letter in some word before running out of chances, he or she will be somehow consoled, and gameplay should end. The front side’s two buttons should continue to operate.
 - A user must be able to configure three settings: the length of words to be guessed (the allowed range for which must be [1,n], where n is the length of the longest word in words.plist/xml); the maximum number of incorrect guesses allowed (the allowed range for which must be [1,26]); and the game mode(normal or evil).
 - When settings are changed, they should only take effect for new games, not one already in progress, if any.
-- The app must maintain a history of high scores that’s displayed anytime a game is won or lost. High scores are based on the unique amount of letters in the word and the number of correctly guessed letters divided by the total amount of letters guessed. The top 10 scores are displayed with the word guessed. The history of high scores should persist even when the app is backgrounded or force-quit.
+- The app must maintain a history of high scores that’s displayed anytime a game is won or lost. High scores are based on the unique amount of letters in the word and the number of used tries. The user is rewarded for using the least amount of tries to guess the word with the most amount of unique characters. The top 10 scores are displayed with the word guessed. The history of high scores should persist even when the app is backgrounded or force-quit.
 - The app must have an additional game mode called evil. In this game mode the app dynamically chooses the word to be guessed as the game progresses. This dynamic choice will keep the amount of possible words to a maximum for every letter that's guessed.
 
 Frameworks, language and libraries
 ---------
 
 - Java
-- AndEngine
+- OpenGL
 
 Mock-up screens
 ---------
