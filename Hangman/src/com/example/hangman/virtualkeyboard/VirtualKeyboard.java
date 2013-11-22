@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,7 +49,6 @@ public class VirtualKeyboard
 	private void onTouch(View view)
 	{
 		Button button = (Button)view;
-		button.setBackgroundDrawable(correct);
 		button.setEnabled(false);
 		
 		char letter = button.getText().charAt(0);
@@ -57,18 +58,15 @@ public class VirtualKeyboard
 	public void highlight(char letter, boolean isCorrect)
 	{
 		Button button = buttons.get(letter);
-		
-		if (isCorrect)
-			button.setBackgroundDrawable(correct);
-		else
-			button.setBackgroundDrawable(incorrect);
+		int color = isCorrect ? Color.rgb(0, 255, 0) : Color.rgb(255, 0, 0);
+		button.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
 	}
 	
 	public void reset()
 	{
 		for (Button button : buttons.values())
 		{
-			button.setBackgroundDrawable(normal);
+			button.getBackground().clearColorFilter();
 			button.setEnabled(true);
 		}
 	}
