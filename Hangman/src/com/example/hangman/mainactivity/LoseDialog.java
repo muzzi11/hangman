@@ -8,11 +8,13 @@ import android.os.Bundle;
 
 public class LoseDialog extends DialogFragment 
 {
-	public DialogListener listener;	
-	public String word;	
+	private DialogListener listener;	
+	private String word;	
 		
-	public LoseDialog()
-	{		
+	public LoseDialog(DialogListener listener, String word)
+	{
+		this.listener = listener;
+		this.word = word;
 		setCancelable(false);
 	}
 	

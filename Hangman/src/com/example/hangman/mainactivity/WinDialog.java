@@ -1,6 +1,5 @@
 package com.example.hangman.mainactivity;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -9,11 +8,13 @@ import android.os.Bundle;
 
 public class WinDialog extends DialogFragment 
 {
-	public DialogListener listener;		
-	public String word;		
-		
-	public WinDialog()
-	{		
+	private DialogListener listener;		
+	private String word;		
+	
+	public WinDialog(DialogListener listener, String word)
+	{
+		this.listener = listener;
+		this.word = word;
 		setCancelable(false);
 	}
 	

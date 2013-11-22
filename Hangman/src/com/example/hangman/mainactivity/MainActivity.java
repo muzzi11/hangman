@@ -103,7 +103,6 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 				startGame();
 			}
 		});
-        startGame();
     }
     
     private void replaySavedGame()
@@ -129,6 +128,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	{
     		onKeyPressed(gameState.keyLog.charAt(i));
     	}
+    	
+    	updateProgress();
     }
     
     @Override
@@ -210,9 +211,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	audio.play(this, AudioManager.LOSE);
     	gameState.reset(settings);
     	
-    	LoseDialog dialog = new LoseDialog();
-    	dialog.word = word;
-    	dialog.listener = this;   	
+    	LoseDialog dialog = new LoseDialog(this, word);
     	dialog.show(getFragmentManager(), "Hangman");    	    	
     }
     
@@ -222,9 +221,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	audio.play(this, AudioManager.WIN);    	
     	gameState.reset(settings);
     	
-    	WinDialog dialog = new WinDialog();    	
-    	dialog.word = word;
-    	dialog.listener = this;    	
+    	WinDialog dialog = new WinDialog(this, word);    	
     	dialog.show(getFragmentManager(), "Hangman");
     	history.score(word, tries);
     }    
