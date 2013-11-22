@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -38,20 +37,22 @@ import com.example.hangman.settingsactivity.*;
 
 public class MainActivity extends Activity implements GameplayListener, KeyboardListener, DialogListener
 {
-	//private RenderTarget renderTarget;
+	private ArrayList<String> words;	
+	
 	private VirtualKeyboard keyboard;
-	private Gameplay gameplay;
-	private Gallows gallows;
+	
 	private History history;
+	
+	private Gameplay gameplay;
+	
+	private Gallows gallows;
+	
 	private GameSurfaceView gameSurfaceView;
 	private GLRenderer renderer;
+	
 	private Settings settings;
-	
-	private int wordLength;
-	private int maxTries;
-	private boolean isEvil;
-	
-	private ArrayList<String> words = new ArrayList<String>();	
+	private GameState gameState;
+
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -59,7 +60,13 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         super.onCreate(savedInstanceState);       
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);             
-             
+        
+        words = new ArrayList<String>();
+        
+        keyboard = new VirtualKeyboard(this, this);
+        
+        history = new History(this);
+        
         gallows = new Gallows();
         
         gameSurfaceView = (GameSurfaceView) findViewById(R.id.surfaceView1);
@@ -67,11 +74,14 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         
         gameSurfaceView.setRenderer(renderer);
         
-        history = new History(this);
-        keyboard = new VirtualKeyboard(this, this);
+        settings = new Settings();
+        settings.load(this);
+        gameState = new GameState();
+        gameState.load(this);
+        replaySavedGame();
                 
-        ImageButton settings = (ImageButton) findViewById(R.id.settings);
-        settings.setOnClickListener(new OnClickListener() {
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.settings);
+        settingsButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -80,23 +90,51 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 			}
 		});
         
-        ImageButton newGame = (ImageButton) findViewById(R.id.newGame);
-        newGame.setOnClickListener(new OnClickListener() {
+        ImageButton newGameButton = (ImageButton) findViewById(R.id.newGame);
+        newGameButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				startGame();
 			}
 		});
-        
-        startGame();
-    }  
+    }
+    
+    private void replaySavedGame()
+    {
+    	Settings s = gameState.settings;
+    	
+    	loadWords(s.wordLength);
+    	
+    	if(s.isEvil)
+    	{
+    		gameplay = new EvilGameplay(words, s.wordLength, s.maxTries, this);
+    	}
+    	else
+    	{
+    		GoodGameplay gg = new GoodGameplay(words, s.wordLength, s.maxTries, this);
+    		if(!gameState.word.equals("")) gg.word = gameState.word;
+    		gameplay = gg;
+    	}
+    	
+    	gallows.setMaxSteps(s.maxTries);
+    	
+    	for(int i = 0; i < gameState.keyLog.length(); ++i)
+    	{
+    		onKeyPressed(gameState.keyLog.charAt(i));
+    	}
+    }
     
     @Override
     protected void onPause()
     {
     	super.onPause();
-    	//renderTarget.pause();
+    	if(!gameState.settings.isEvil)
+    	{
+    		GoodGameplay gg = (GoodGameplay) gameplay;
+    		gameState.word = gg.word;
+    	}
+    	gameState.save(this);
     	gameSurfaceView.onPause();
     }
     
@@ -106,27 +144,21 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	super.onResume();
     	gameSurfaceView.onResume();
     }
-            
-    // Load previous game settings
-    private void load()
-    {
-    }
     
     private void startGame()
     {
     	keyboard.reset();
-        
-    	settings = new Settings(this);
-    	wordLength = settings.wordLength;
-    	maxTries = settings.maxTries;
-    	isEvil = settings.isEvil;
     	
-        loadWords(wordLength);
+    	// Load possible new settings
+    	settings.load(this);
+    	gameState.reset(settings);
     	
-    	gameplay = isEvil ? new EvilGameplay(words, wordLength, maxTries, this) : 
-    		new GoodGameplay(words, wordLength, maxTries, this);    	
+        loadWords(settings.wordLength);
     	
-    	gallows.setMaxSteps(maxTries);
+    	gameplay = settings.isEvil ? new EvilGameplay(words, settings.wordLength, settings.maxTries, this) : 
+    		new GoodGameplay(words, settings.wordLength, settings.maxTries, this);    	
+    	
+    	gallows.setMaxSteps(settings.maxTries);
     	gallows.reset();
     	
     	updateProgress();
@@ -134,7 +166,9 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
             
     private void updateProgress()
     {
+    	int maxTries = gameState.settings.maxTries;
     	String guess = gameplay.getGuess();
+    	
     	TextView text = (TextView)findViewById(R.id.hangmanProgress);
     	text.setText(guess);
     	TextView tries = (TextView)findViewById(R.id.textViewTries);
@@ -144,19 +178,24 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     public void onKeyPressed(char letter)
     {
     	boolean isCorrect = gameplay.guess(letter);
+    	
+    	gameState.updateState(letter);
+    	
     	keyboard.highlight(letter, isCorrect);
     	if(!isCorrect) gallows.nextStep();
+    	
     	updateProgress();
     }
     
     public void onLose(String word)
-    {    
-    	LoseDialog dialog = new LoseDialog();
-    	dialog.word = word;
-    	dialog.setListener(this);
-    	dialog.setCancelable(false);
+    {
+    	// reset our game state, don't want to lose again if we load back in
+    	gameState.reset(settings);
+    	
+    	LoseDialog dialog = new LoseDialog(word, this);
     	dialog.show(getFragmentManager(), "Hangman");
     	
+    	// Play lose sound
     	MediaPlayer mp = MediaPlayer.create(this, R.raw.loser);
     	mp.setOnCompletionListener(new OnCompletionListener() {
 			
@@ -169,14 +208,15 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     public void onWin(String word, int tries)
-    {    
-    	WinDialog dialog = new WinDialog();    	
-    	dialog.word = word;
-    	dialog.setListener(this);
-    	dialog.setCancelable(false);
+    {
+    	// reset our game state, don't want to lose again if we load back in
+    	gameState.reset(settings);
+    	
+    	WinDialog dialog = new WinDialog(word, this);
     	dialog.show(getFragmentManager(), "Hangman");
     	history.score(word, tries);
     	
+    	// Play victory sound
     	MediaPlayer mp = MediaPlayer.create(this, R.raw.winner);
     	mp.setOnCompletionListener(new OnCompletionListener() {
 			
@@ -209,7 +249,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     @Override
-    public void onNewGame()
+    public void onNewGameSelect()
     {
     	startGame();    
     } 

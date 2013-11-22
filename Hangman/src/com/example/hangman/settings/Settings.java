@@ -17,15 +17,7 @@ public class Settings
 	public int maxTries = 20;
 	public int wordLength = 5;
 	
-	private Context context;
-	
-	public Settings(Context context)
-	{		
-		this.context = context;
-		load();
-	}
-	
-	private void load()
+	public void load(Context context)
 	{	
 		try
     	{
@@ -43,6 +35,8 @@ public class Settings
     		if (line != null) wordLength = Integer.parseInt(line);
     		
     		bufferedReader.close();
+    		inputStreamReader.close();
+    		stream.close();
     	}
     	catch(IOException e)
     	{
@@ -50,7 +44,7 @@ public class Settings
     	}		
 	}
 	
-	public void save()
+	public void save(Context context)
 	{
 		try
 		{			

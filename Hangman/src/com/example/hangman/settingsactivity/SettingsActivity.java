@@ -1,6 +1,7 @@
 package com.example.hangman.settingsactivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +22,8 @@ public class SettingsActivity extends Activity
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.settings);
 	    
-	    settings = new Settings(this);   
+	    settings = new Settings();   
+	    settings.load(this);
 	    initialize();
 	}		
 			
@@ -37,7 +39,9 @@ public class SettingsActivity extends Activity
 	    final SeekBar seekBarLength = (SeekBar) findViewById(R.id.seekBarWordLength);
 	    	    	  
 	    seekBarTries.setProgress(settings.maxTries);
-	    seekBarLength.setProgress(settings.wordLength); 
+	    seekBarLength.setProgress(settings.wordLength);
+	    
+	    final Context context = this;
 	    
 	    seekBarTries.setOnSeekBarChangeListener(new OnSeekBarChangeListener() 
 	    {			
@@ -57,7 +61,7 @@ public class SettingsActivity extends Activity
 			{
 				tries.setText("" + progress);
 				settings.maxTries = progress;
-				settings.save();
+				settings.save(context);
 			}
 		});
 	    
@@ -79,7 +83,7 @@ public class SettingsActivity extends Activity
 			{
 				length.setText("" + progress);
 				settings.wordLength = progress;
-				settings.save();
+				settings.save(context);
 			}
 	    });	
 	    
@@ -91,7 +95,7 @@ public class SettingsActivity extends Activity
 			public void onClick(View v) 
 			{
 				settings.isEvil = ((CheckBox) v).isChecked();
-				settings.save();
+				settings.save(context);
 			}
 		});
 	}

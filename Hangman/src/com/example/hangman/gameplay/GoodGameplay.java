@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GoodGameplay extends Gameplay
 {
-	private String word;	
+	public String word;	
 	
 	public GoodGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{

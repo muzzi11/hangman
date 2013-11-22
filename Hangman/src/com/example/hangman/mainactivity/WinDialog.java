@@ -9,11 +9,13 @@ import android.os.Bundle;
 public class WinDialog extends DialogFragment 
 {
 	private DialogListener listener;
-	public String word;
+	private String word;
 	
-	public void setListener(DialogListener listener)
+	public WinDialog(String word, DialogListener listener)
 	{
+		this.word = word;
 		this.listener = listener;
+		setCancelable(false);
 	}	
 	
     @Override
@@ -26,7 +28,7 @@ public class WinDialog extends DialogFragment
                {
                    public void onClick(DialogInterface dialog, int id) 
                    {
-                       listener.onNewGame();
+                       listener.onNewGameSelect();
                    }
                })
                .setNegativeButton("Highscores", new DialogInterface.OnClickListener() 

@@ -9,12 +9,14 @@ import android.os.Bundle;
 public class LoseDialog extends DialogFragment 
 {
 	private DialogListener listener;
-	public String word;	
+	private String word;	
 		
-	public void setListener(DialogListener listener)
+	public LoseDialog(String word, DialogListener listener)
 	{
+		this.word = word;
 		this.listener = listener;
-	}	
+		setCancelable(false);
+	}
 	
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) 
@@ -26,7 +28,7 @@ public class LoseDialog extends DialogFragment
                {
                    public void onClick(DialogInterface dialog, int id) 
                    {
-                       listener.onNewGame();
+                       listener.onNewGameSelect();
                    }
                })
                .setNegativeButton("Highscores", new DialogInterface.OnClickListener() 
