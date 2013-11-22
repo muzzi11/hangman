@@ -1,19 +1,20 @@
 package com.example.hangman.mainactivity;
 
-import com.example.hangman.audio.*;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 
 public class WinDialog extends DialogFragment 
 {
 	public DialogListener listener;		
 	public String word;		
+	
+	public WinDialog()
+	{		
+		setCancelable(false);
+	}
 	
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) 
@@ -23,15 +24,15 @@ public class WinDialog extends DialogFragment
         builder.setMessage("Congratulations! You have guessed: " + word + ". Want to play again?")
                .setPositiveButton("New game", new DialogInterface.OnClickListener() 
                {
-                   public void onClick(DialogInterface dialog, int id) 
-                   {                	                 	   
-                       listener.onNewGame();                       
+                   public void onClick(DialogInterface dialog, int id)
+                   {
+                       listener.onNewGameSelect();
                    }
                })
                .setNegativeButton("Highscores", new DialogInterface.OnClickListener() 
                {
-                   public void onClick(DialogInterface dialog, int id) 
-                   {                	   
+                   public void onClick(DialogInterface dialog, int id)
+                   {
                        listener.onHighscoreSelect();                       
                    }
                });        

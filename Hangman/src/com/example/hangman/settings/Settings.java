@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 public class Settings 
@@ -17,19 +17,11 @@ public class Settings
 	public int maxTries = 20;
 	public int wordLength = 5;
 	
-	private Activity activity;
-	
-	public Settings(Activity activity)
-	{		
-		this.activity = activity;
-		load();
-	}
-	
-	private void load()
+	public void load(Context context)
 	{	
 		try
     	{
-    		InputStream stream = activity.openFileInput("settings.txt");
+    		InputStream stream = context.openFileInput("settings.txt");
     		InputStreamReader inputStreamReader = new InputStreamReader(stream);
     		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
     		
@@ -43,6 +35,8 @@ public class Settings
     		if (line != null) wordLength = Integer.parseInt(line);
     		
     		bufferedReader.close();
+    		inputStreamReader.close();
+    		stream.close();
     	}
     	catch(IOException e)
     	{
@@ -50,11 +44,11 @@ public class Settings
     	}		
 	}
 	
-	public void save()
+	public void save(Context context)
 	{
 		try
 		{			
-			OutputStream outStream = activity.openFileOutput("settings.txt", activity.MODE_PRIVATE);
+			OutputStream outStream = context.openFileOutput("settings.txt", Context.MODE_PRIVATE);
 			OutputStreamWriter stream = new OutputStreamWriter(outStream);
 			BufferedWriter writer = new BufferedWriter(stream); 
 						

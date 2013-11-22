@@ -36,14 +36,22 @@ import com.example.hangman.audio.*;
 
 public class MainActivity extends Activity implements GameplayListener, KeyboardListener, DialogListener
 {
-	//private RenderTarget renderTarget;
+	private ArrayList<String> words;	
+	
 	private VirtualKeyboard keyboard;
-	private Gameplay gameplay;
-	private Gallows gallows;
+	
 	private History history;
+	
+	private Gameplay gameplay;
+	
+	private Gallows gallows;
+	
 	private GameSurfaceView gameSurfaceView;
 	private GLRenderer renderer;
+	
 	private Settings settings;
+	private GameState gameState;
+
 	private AudioManager audio;
 	
 	private int wordLength;
@@ -51,15 +59,20 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private boolean isEvil;
 	private boolean isFinished;
 	
-	private ArrayList<String> words;	
-	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {   				
         super.onCreate(savedInstanceState);       
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);             
-             
+        
+        words = new ArrayList<String>();
+        
+        keyboard = new VirtualKeyboard(this, this);
+        audio = new AudioManager();
+        
+        history = new History(this);
+        
         gallows = new Gallows();
         
         gameSurfaceView = (GameSurfaceView) findViewById(R.id.surfaceView1);
@@ -67,37 +80,70 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         
         gameSurfaceView.setRenderer(renderer);
         
-        history = new History(this);
-        keyboard = new VirtualKeyboard(this, this);
-        audio = new AudioManager();
-        
-        ImageButton settings = (ImageButton) findViewById(R.id.settings);
-        settings.setOnClickListener(new OnClickListener() {
-			
+        settings = new Settings();
+        settings.load(this);
+        gameState = new GameState();
+        gameState.load(this);
+        replaySavedGame();
+                
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.settings);
+        settingsButton.setOnClickListener(new OnClickListener()
+        {
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
 		    	startActivity(intent);	
 			}
 		});
         
-        ImageButton newGame = (ImageButton) findViewById(R.id.newGame);
-        newGame.setOnClickListener(new OnClickListener() {
-			
+        ImageButton newGameButton = (ImageButton) findViewById(R.id.newGame);
+        newGameButton.setOnClickListener(new OnClickListener()
+        {
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				startGame();
 			}
 		});
-        
         startGame();
-    }  
+    }
+    
+    private void replaySavedGame()
+    {
+    	Settings s = gameState.settings;
+    	
+    	loadWords(s.wordLength);
+    	
+    	if(s.isEvil)
+    	{
+    		gameplay = new EvilGameplay(words, s.wordLength, s.maxTries, this);
+    	}
+    	else
+    	{
+    		GoodGameplay gg = new GoodGameplay(words, s.wordLength, s.maxTries, this);
+    		if(!gameState.word.equals("")) gg.word = gameState.word;
+    		gameplay = gg;
+    	}
+    	
+    	gallows.setMaxSteps(s.maxTries);
+    	
+    	for(int i = 0; i < gameState.keyLog.length(); ++i)
+    	{
+    		onKeyPressed(gameState.keyLog.charAt(i));
+    	}
+    }
     
     @Override
     protected void onPause()
     {
     	super.onPause();
-    	//renderTarget.pause();
+    	if(!gameState.settings.isEvil)
+    	{
+    		GoodGameplay gg = (GoodGameplay) gameplay;
+    		gameState.word = gg.word;
+    	}
+    	gameState.save(this);
     	gameSurfaceView.onPause();
     	
     	if (!isFinished) audio.stop();
@@ -109,37 +155,35 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	super.onResume();
     	gameSurfaceView.onResume();
     }
-            
-    // Load previous game settings
-    private void load()
-    {
-    }
     
     private void startGame()
     {
     	isFinished = false;
     	
     	keyboard.reset();
+    	audio.stop();
+    	
+    	// Load possible new settings
+    	settings.load(this);
+    	gameState.reset(settings);
+    	
+    	loadWords(settings.wordLength);
         
-    	settings = new Settings(this);
-    	wordLength = settings.wordLength;
-    	maxTries = settings.maxTries;
-    	isEvil = settings.isEvil;
-    	
-        loadWords(wordLength);
-    	
-    	gameplay = isEvil ? new EvilGameplay(words, wordLength, maxTries, this) : 
-    		new GoodGameplay(words, wordLength, maxTries, this);    	
-    	
-    	gallows.setMaxSteps(maxTries);
-    	gallows.reset();
+        gameplay = settings.isEvil ? new EvilGameplay(words, settings.wordLength, settings.maxTries, this) : 
+                new GoodGameplay(words, settings.wordLength, settings.maxTries, this);            
+        
+        gallows.setMaxSteps(settings.maxTries);
+        gallows.reset();
     	
     	updateProgress();
     }    
             
     private void updateProgress()
     {
+    	int maxTries = gameState.settings.maxTries;
+    	Log.d("Hangman", "GameState maxtries " + maxTries);
     	String guess = gameplay.getGuess();
+    	
     	TextView text = (TextView)findViewById(R.id.hangmanProgress);
     	text.setText(guess);
     	TextView tries = (TextView)findViewById(R.id.textViewTries);
@@ -149,8 +193,9 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     public void onKeyPressed(char letter)
     { 	
     	boolean isCorrect = gameplay.guess(letter);    	    	    	
-    	keyboard.highlight(letter, isCorrect);    	
-   	    	
+    	keyboard.highlight(letter, isCorrect);
+    	gameState.updateState(letter);
+
     	if(!isCorrect)
 		{ 
     		if (!isFinished) audio.play(this, AudioManager.HAMMER);
@@ -158,6 +203,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 		}
     	else 
     		if (!isFinished) audio.play(this, AudioManager.CORRECT);
+
     	updateProgress();
     }
     
@@ -165,25 +211,25 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {       	
     	isFinished = true;
     	audio.play(this, AudioManager.LOSE);
-    	    	
+    	gameState.reset(settings);
+    	
     	LoseDialog dialog = new LoseDialog();
     	dialog.word = word;
-    	dialog.listener = this;    	
-    	dialog.setCancelable(false);
+    	dialog.listener = this;   	
     	dialog.show(getFragmentManager(), "Hangman");    	    	
     }
     
     public void onWin(String word, int tries)
-    {   
+    {       	    
     	isFinished = true;
     	audio.play(this, AudioManager.WIN);    	
+    	gameState.reset(settings);
     	
     	WinDialog dialog = new WinDialog();    	
     	dialog.word = word;
     	dialog.listener = this;    	
-    	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
-    	history.score(word, tries);    	    	
+    	history.score(word, tries);
     }    
     
     @Override
@@ -207,7 +253,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     @Override
-    public void onNewGame()
+    public void onNewGameSelect()
     {
     	startGame();    
     } 

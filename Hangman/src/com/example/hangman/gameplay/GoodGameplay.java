@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class GoodGameplay extends Gameplay
 {
-	private String word;	
+	public String word;	
 	
 	public GoodGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{
@@ -26,7 +26,7 @@ public class GoodGameplay extends Gameplay
 	}
 		
 	@Override
-	public boolean guess(char letter)	
+	public boolean guess(char letter)
 	{		
 		boolean letterGuessed = word.contains("" + letter);
 		

@@ -21,19 +21,12 @@ public class History
 	private final int maxHighscores = 20;
 	private  ArrayList<HistoryEntry> scores = new ArrayList<HistoryEntry>();
 	
-	private OutputStream outStream;
+	private Context context;
 	
 	public History(Context context)
 	{
-		load(context);
-		
-		try 
-		{
-			outStream = context.openFileOutput("scores.txt", Context.MODE_PRIVATE);
-		} catch (FileNotFoundException e) 
-		{
-			Log.e("loadOutputstream", e.getMessage());
-		}
+		this.context = context;
+		load();
 	}
 	
 	public ArrayList<HistoryEntry> getEntries()
@@ -74,7 +67,7 @@ public class History
         return set.size();
     }
 	
-	private void load(Context context)
+	private void load()
 	{
 		scores.clear();
 		
@@ -115,6 +108,7 @@ public class History
 	{
 		try
 		{
+			OutputStream outStream = context.openFileOutput("scores.txt", Context.MODE_PRIVATE);
 			OutputStreamWriter stream = new OutputStreamWriter(outStream);
 			BufferedWriter writer = new BufferedWriter(stream);
 			

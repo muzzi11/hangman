@@ -6,17 +6,15 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.example.hangman.audio.*;
-
 public class LoseDialog extends DialogFragment 
 {
 	public DialogListener listener;	
 	public String word;	
 		
-	public void setListener(DialogListener listener)
-	{
-		this.listener = listener;
-	}	
+	public LoseDialog()
+	{		
+		setCancelable(false);
+	}
 	
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) 
@@ -27,15 +25,15 @@ public class LoseDialog extends DialogFragment
                .setPositiveButton("New game", new DialogInterface.OnClickListener() 
                {
                    public void onClick(DialogInterface dialog, int id) 
-                   {                	   
-                       listener.onNewGame();                       
+                   {
+                       listener.onNewGameSelect();
                    }
                })
                .setNegativeButton("Highscores", new DialogInterface.OnClickListener() 
                {
                    public void onClick(DialogInterface dialog, int id) 
-                   {                	   
-                       listener.onHighscoreSelect();                       
+                   {
+                	   listener.onHighscoreSelect();                       
                    }
                });        
         return builder.create();
