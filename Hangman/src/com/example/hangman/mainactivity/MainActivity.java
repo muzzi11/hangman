@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.hangman.R;
@@ -62,7 +63,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         history = new History(this);
         keyboard = new VirtualKeyboard(this, this);
                 
-        Button options = (Button) findViewById(R.id.button1);
+        ImageButton options = (ImageButton) findViewById(R.id.button1);
         options.setOnClickListener(new OnClickListener() {
 			
 			@Override
