@@ -46,6 +46,8 @@ public class VirtualKeyboard
     {
         Button button = buttons.get(letter);
         int color = isCorrect ? Color.rgb(0, 255, 0) : Color.rgb(255, 0, 0);
+        
+        button.setEnabled(false);
         button.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
     }
     
