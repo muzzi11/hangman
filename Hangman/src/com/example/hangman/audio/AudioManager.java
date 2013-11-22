@@ -27,7 +27,9 @@ public class AudioManager
 	public void play(Context context, int music)
 	{
 		if(muted) return;
+		// When the winner or loser sounds have finished playing, reset the value of current.
 		if (current < 3 && released) current = 3;
+		// Only play hammer and correct sounds when the winner or loser sounds are not playing.
 		if (current < 3 && music > 2) return;
 		current = music;
 		
