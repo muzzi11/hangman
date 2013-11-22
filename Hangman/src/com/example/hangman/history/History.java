@@ -36,7 +36,7 @@ public class History
 	public int score(String word, int tries, int maxTries)
 	{
 		final float maxTriesBonus = 26 - maxTries;
-		final float triesMultiplier = (maxTries - tries) / (float) maxTries;
+		final float triesMultiplier = (maxTries + 1 - tries) / (float) (maxTries + 1);
 		final float wordMultiplier = getUniqueChars(word) / (float) word.length();
 		int score = Math.round(wordMultiplier * triesMultiplier * maxTriesBonus * 40.0f);
 		Log.d("Hangman", "Score: " + score);
