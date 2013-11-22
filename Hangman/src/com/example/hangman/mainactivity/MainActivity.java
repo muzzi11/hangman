@@ -89,7 +89,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 			public void onClick(View v)
 			{
 				Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
-		    	startActivity(intent);	
+		    	startActivity(intent);
 			}
 		});
         
@@ -229,6 +229,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	intent.putIntegerArrayListExtra("scores", scores);
     	
     	startActivity(intent);
+    	startGame(false);
     }
     
     @Override

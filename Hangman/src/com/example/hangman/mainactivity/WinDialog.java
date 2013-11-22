@@ -15,7 +15,7 @@ public class WinDialog extends DialogFragment
 	{
 		this.listener = listener;
 		msg = "Congratulations! You have guessed: " + word + " for " + 
-				Integer.toString(score) + "points. Want to play again?";
+				Integer.toString(score) + " points. Want to play again?";
 		setCancelable(false);
 	}
 	
