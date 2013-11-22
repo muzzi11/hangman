@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 
 import android.content.Context;
@@ -17,7 +18,8 @@ import android.util.Log;
 
 public class History 
 {
-	public ArrayList<Integer> scores;
+	private final int maxHighscores = 20;
+	private  ArrayList<HistoryEntry> scores = new ArrayList<HistoryEntry>();
 	
 	private OutputStream outStream;
 	
@@ -27,68 +29,38 @@ public class History
 		
 		try 
 		{
-			outStream = context.openFileOutput("scores.txt", Context.MODE_APPEND);
+			outStream = context.openFileOutput("scores.txt", Context.MODE_PRIVATE);
 		} catch (FileNotFoundException e) 
 		{
 			Log.e("loadOutputstream", e.getMessage());
 		}
 	}
 	
-	private void load(Context context)
+	public ArrayList<HistoryEntry> getEntries()
 	{
-		scores = new ArrayList<Integer>();
-		try
-    	{
-    		InputStream stream = context.openFileInput("scores.txt");
-    		InputStreamReader inputStreamReader = new InputStreamReader(stream);
-    		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-    		
-    		String line;    		
-    		while((line = bufferedReader.readLine()) != null)
-    		{
-    			scores.add(Integer.parseInt(line));
-    		}
-    		
-    		bufferedReader.close();
-    		Collections.sort(scores);
-    		Collections.reverse(scores);
-    		/*
-    		 Collections.sort(scores, new Comparator<Integer>() 
-			{
-    			@Override
-    			public int compare(Integer i, Integer k){
-    				return i > k ? i : k;
-    			}			
-			});
-    		 */
-    	}
-    	catch(IOException e)
-    	{
-    		Log.e("loadScores", e.getMessage());
-    	}
-	}
-	
-	private void save(int score)
-	{
-		try
-		{
-			OutputStreamWriter stream = new OutputStreamWriter(outStream);
-			BufferedWriter writer = new BufferedWriter(stream); 
-			writer.write("" + score);
-			writer.newLine();
-			writer.close();
-		}
-		catch(IOException e)
-    	{
-    		Log.e("saveScore", e.getMessage());
-    	}
+		return scores;
 	}
 	
 	public void score(String word, int tries)
 	{
 		int score = (int)(((float)getUniqueChars(word) / (float)tries) * 1000.0f);
 		Log.d("Hangman", "Score: " + score);
-		save(score);
+		
+		int i;
+		for(i = 0; i < scores.size(); ++i)
+		{
+			if(score > scores.get(i).score) break;
+		}
+		
+		if(i < maxHighscores)
+		{
+			HistoryEntry entry = new HistoryEntry();
+			entry.word = word;
+			entry.score = score;
+			scores.add(i, entry);
+			
+			save();
+		}
 	}
 	
 	private int getUniqueChars(String word)
@@ -101,4 +73,62 @@ public class History
         }
         return set.size();
     }
+	
+	private void load(Context context)
+	{
+		scores.clear();
+		
+		try
+    	{
+    		InputStream stream = context.openFileInput("scores.txt");
+    		InputStreamReader inputStreamReader = new InputStreamReader(stream);
+    		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+    		
+    		String line;    		
+    		while((line = bufferedReader.readLine()) != null && scores.size() < maxHighscores)
+    		{
+    			HistoryEntry entry = new HistoryEntry();
+    			entry.fromString(line);
+    			scores.add(entry);
+    		}
+    		
+    		bufferedReader.close();
+    		Collections.sort(scores, new Comparator<HistoryEntry>()
+    				{
+    			@Override
+    			public int compare(HistoryEntry lhs, HistoryEntry rhs)
+    			{
+    				return lhs.score - rhs.score;
+    			}
+    		});
+    		Collections.reverse(scores);
+    		
+    		stream.close();
+    	}
+    	catch(IOException e)
+    	{
+    		Log.e("loadScores", e.getMessage());
+    	}
+	}
+	
+	private void save()
+	{
+		try
+		{
+			OutputStreamWriter stream = new OutputStreamWriter(outStream);
+			BufferedWriter writer = new BufferedWriter(stream);
+			
+			for(HistoryEntry entry : scores)
+			{
+				writer.write(entry.toString());
+				writer.newLine();
+			}
+			
+			writer.close();
+		}
+		catch(IOException e)
+    	{
+    		Log.e("saveScore", e.getMessage());
+    	}
+	}
 }

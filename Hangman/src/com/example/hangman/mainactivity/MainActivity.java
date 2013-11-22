@@ -21,6 +21,7 @@ import com.example.hangman.graphics.Gallows;
 import com.example.hangman.graphics.GameSurfaceView;
 import com.example.hangman.highscoreactivity.HighScoreActivity;
 import com.example.hangman.history.History;
+import com.example.hangman.history.HistoryEntry;
 import com.example.hangman.mainactivity.DialogListener;
 import com.example.hangman.mainactivity.WinDialog;
 import com.example.hangman.virtualkeyboard.KeyboardListener;
@@ -130,8 +131,21 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     @Override
     public void onHighscoreSelect()
-    {    
+    {
     	Intent intent = new Intent(this, HighScoreActivity.class);
+    	ArrayList<String> words = new ArrayList<String>();
+    	ArrayList<Integer> scores = new ArrayList<Integer>();
+    	ArrayList<HistoryEntry> entries = history.getEntries();
+    	
+    	for(HistoryEntry entry : entries)
+    	{
+    		words.add(entry.word);
+    		scores.add(entry.score);
+    	}
+    	
+    	intent.putStringArrayListExtra("words", words);
+    	intent.putIntegerArrayListExtra("scores", scores);
+    	
     	startActivity(intent);
     }
     
