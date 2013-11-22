@@ -61,9 +61,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         
         history = new History(this);
         keyboard = new VirtualKeyboard(this, this);
-        settings = new Settings(this);
-        loadWords(settings.wordLength);   
-        
+                
         Button options = (Button) findViewById(R.id.button1);
         options.setOnClickListener(new OnClickListener() {
 			
@@ -106,6 +104,9 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {
     	keyboard.reset();
         
+    	settings = new Settings(this);
+        loadWords(settings.wordLength);
+    	
     	gameplay = settings.isEvil ? new EvilGameplay(words, settings.wordLength, settings.maxTries, this) : 
     		new GoodGameplay(words, settings.wordLength, settings.maxTries, this);    	
     	
@@ -133,6 +134,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     public void onLose(String word)
     {    
     	LoseDialog dialog = new LoseDialog();
+    	dialog.word = word;
     	dialog.setListener(this);
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
@@ -141,6 +143,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     public void onWin(String word, int tries)
     {    
     	WinDialog dialog = new WinDialog();
+    	dialog.word = word;
     	dialog.setListener(this);
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
