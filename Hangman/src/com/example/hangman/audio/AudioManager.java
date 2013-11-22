@@ -27,6 +27,7 @@ public class AudioManager
 	public void play(Context context, int music)
 	{
 		if(muted) return;
+		if (current < 3 && released) current = 3;
 		if (current < 3 && music > 2) return;
 		current = music;
 		
