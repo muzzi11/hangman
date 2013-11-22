@@ -81,8 +81,8 @@ public class SettingsActivity extends Activity
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) 
 			{
-				length.setText("" + progress);
-				settings.wordLength = progress;
+				length.setText("" + (progress + 1));
+				settings.wordLength = progress + 1;
 				settings.save(context);
 			}
 	    });	

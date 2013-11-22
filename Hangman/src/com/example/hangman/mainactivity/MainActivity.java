@@ -216,8 +216,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	gameState.reset(settings);
     	
     	WinDialog dialog = new WinDialog(this, word, score);    	
-    	dialog.show(getFragmentManager(), "Hangman");
-    	
+    	dialog.show(getFragmentManager(), "Hangman");    	
     }    
     
     @Override
