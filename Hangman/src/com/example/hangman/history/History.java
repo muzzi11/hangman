@@ -33,9 +33,12 @@ public class History
 		return scores;
 	}
 	
-	public void score(String word, int tries)
+	public int score(String word, int tries, int maxTries)
 	{
-		int score = (int)(((float)getUniqueChars(word) / (float)tries) * 1000.0f);
+		final float maxTriesBonus = 26 - maxTries;
+		final float triesMultiplier = (maxTries - tries) / (float) maxTries;
+		final float wordMultiplier = getUniqueChars(word) / (float) word.length();
+		int score = Math.round(wordMultiplier * triesMultiplier * maxTriesBonus * 40.0f);
 		Log.d("Hangman", "Score: " + score);
 		
 		int i;
@@ -53,6 +56,8 @@ public class History
 			
 			save();
 		}
+		
+		return score;
 	}
 	
 	private int getUniqueChars(String word)

@@ -214,13 +214,14 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     @Override
     public void onWin(String word, int tries)
-    {       	
+    {
+    	int score = history.score(word, tries, gameplay.getMaxTries());
     	audio.play(this, AudioManager.WIN);    	
     	gameState.reset(settings);
     	
-    	WinDialog dialog = new WinDialog(this, word);    	
+    	WinDialog dialog = new WinDialog(this, word, score);    	
     	dialog.show(getFragmentManager(), "Hangman");
-    	history.score(word, tries);
+    	
     }    
     
     @Override

@@ -8,13 +8,14 @@ import android.os.Bundle;
 
 public class WinDialog extends DialogFragment 
 {
-	private DialogListener listener;		
-	private String word;		
+	private final DialogListener listener;		
+	private final String msg;
 	
-	public WinDialog(DialogListener listener, String word)
+	public WinDialog(DialogListener listener, String word, int score)
 	{
 		this.listener = listener;
-		this.word = word;
+		msg = "Congratulations! You have guessed: " + word + " for " + 
+				Integer.toString(score) + "points. Want to play again?";
 		setCancelable(false);
 	}
 	
@@ -23,7 +24,7 @@ public class WinDialog extends DialogFragment
     {      
         // Use the Builder class for convenient dialog construction    	
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Congratulations! You have guessed: " + word + ". Want to play again?")
+        builder.setMessage(msg)
                .setPositiveButton("New game", new DialogInterface.OnClickListener() 
                {
                    public void onClick(DialogInterface dialog, int id)
