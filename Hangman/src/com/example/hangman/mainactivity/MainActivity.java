@@ -53,10 +53,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private GameState gameState;
 
 	private AudioManager audio;
-	
-	private int wordLength;
-	private int maxTries;
-	private boolean isEvil;
+
 	private boolean isFinished;
 	
     @Override
