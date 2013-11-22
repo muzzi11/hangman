@@ -51,16 +51,7 @@ public class History
     		
     		bufferedReader.close();
     		Collections.sort(scores);
-    		Collections.reverse(scores);
-    		/*
-    		 Collections.sort(scores, new Comparator<Integer>() 
-			{
-    			@Override
-    			public int compare(Integer i, Integer k){
-    				return i > k ? i : k;
-    			}			
-			});
-    		 */
+    		Collections.reverse(scores);    		
     	}
     	catch(IOException e)
     	{
