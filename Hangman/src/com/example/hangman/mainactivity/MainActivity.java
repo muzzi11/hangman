@@ -140,8 +140,17 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	
     	loadWords(settings.wordLength);
         
-        gameplay = settings.isEvil ? new EvilGameplay(words, settings.wordLength, settings.maxTries, this) : 
-                new GoodGameplay(words, settings.wordLength, settings.maxTries, this);            
+        if(gameState.settings.isEvil)
+        {
+                gameplay = new EvilGameplay(words, settings.wordLength, settings.maxTries, this);
+        }
+        else
+        {
+                GoodGameplay gg = new GoodGameplay(words, settings.wordLength, settings.maxTries, this);
+                // restore the randomly picked word from the save game
+                if(!gameState.word.equals("")) gg.word = gameState.word;
+                gameplay = gg;
+        }
         
         gallows.setMaxSteps(settings.maxTries);
         gallows.reset();
