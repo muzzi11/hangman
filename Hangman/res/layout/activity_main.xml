@@ -23,29 +23,41 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/button1"
             android:layout_marginBottom="14dp"
-            android:layout_toLeftOf="@+id/button1" >
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tries:" />
+            android:layout_toLeftOf="@+id/newGame" >
 
             <TextView
                 android:id="@+id/textViewTries"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="0"
+                android:textSize="24dp" />
 
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/heart" />
+
+        </LinearLayout>
+        
         <ImageButton
-            android:id="@+id/button1"
+            android:id="@+id/settings"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:background="@null"
             android:src="@drawable/settings" />
+
+        <ImageButton
+            android:id="@+id/newGame"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/settings"
+            android:background="@null"
+            android:src="@drawable/new_game" />
 
     </RelativeLayout>
 
