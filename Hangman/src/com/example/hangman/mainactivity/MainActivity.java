@@ -121,6 +121,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	String guess = gameplay.getGuess();
     	TextView text = (TextView)findViewById(R.id.hangmanProgress);
     	text.setText(guess);
+    	TextView tries = (TextView)findViewById(R.id.textViewTries);
+    	tries.setText("" + gameplay.getTries());
     }
     
     public void onKeyPressed(char letter)
