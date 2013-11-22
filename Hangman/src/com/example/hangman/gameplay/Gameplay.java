@@ -26,11 +26,11 @@ public class Gameplay
 		return guess;
 	}
 	
-	public int getMaxTries()
+	public int getTries()
 	{
 		return tries;
 	}
-	
+			
 	// Returns true if the letter was correctly guessed, false otherwise.
 	public boolean guess(char letter)
 	{

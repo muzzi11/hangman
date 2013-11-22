@@ -9,7 +9,8 @@ import android.os.Bundle;
 public class LoseDialog extends DialogFragment 
 {
 	private DialogListener listener;
-	
+	public String word;	
+		
 	public void setListener(DialogListener listener)
 	{
 		this.listener = listener;
@@ -20,7 +21,7 @@ public class LoseDialog extends DialogFragment
     {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("What a pitty, you have lost! Want to play again?")
+        builder.setMessage("You have failed to guess the word: " + word + ". Want to play again?")
                .setPositiveButton("New game", new DialogInterface.OnClickListener() 
                {
                    public void onClick(DialogInterface dialog, int id) 

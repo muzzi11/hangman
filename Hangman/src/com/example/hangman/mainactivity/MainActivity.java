@@ -9,13 +9,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.hangman.R;
 import com.example.hangman.gameplay.EvilGameplay;
 import com.example.hangman.gameplay.Gameplay;
 import com.example.hangman.gameplay.GameplayListener;
+import com.example.hangman.gameplay.GoodGameplay;
 import com.example.hangman.graphics.GLRenderer;
 import com.example.hangman.graphics.Gallows;
 import com.example.hangman.graphics.GameSurfaceView;
@@ -26,6 +31,8 @@ import com.example.hangman.mainactivity.DialogListener;
 import com.example.hangman.mainactivity.WinDialog;
 import com.example.hangman.virtualkeyboard.KeyboardListener;
 import com.example.hangman.virtualkeyboard.VirtualKeyboard;
+import com.example.hangman.settings.Settings;
+import com.example.hangman.settingsactivity.*;
 
 public class MainActivity extends Activity implements GameplayListener, KeyboardListener, DialogListener
 {
@@ -36,6 +43,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private History history;
 	private GameSurfaceView gameSurfaceView;
 	private GLRenderer renderer;
+	private Settings settings;
 	
 	private ArrayList<String> words = new ArrayList<String>();	
 	
@@ -44,11 +52,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {   				
         super.onCreate(savedInstanceState);       
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
-        
-        long start = System.currentTimeMillis();
-        loadWords(9);
-        Log.d("Hangman", Long.toString(System.currentTimeMillis() - start));
+        setContentView(R.layout.activity_main);             
+             
         gallows = new Gallows();
         
         gameSurfaceView = (GameSurfaceView) findViewById(R.id.surfaceView1);
@@ -58,6 +63,16 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         
         history = new History(this);
         keyboard = new VirtualKeyboard(this, this);
+                
+        ImageButton options = (ImageButton) findViewById(R.id.button1);
+        options.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+		    	startActivity(intent);	
+			}
+		});
     }
     
     @Override
@@ -90,10 +105,16 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     private void startGame()
     {
     	keyboard.reset();
-        //gameplay = new GoodGameplay(words, 5, 15, this);
-    	gameplay = new EvilGameplay(words, 9, 25, this);
-    	gallows.setMaxSteps(20);
+        
+    	settings = new Settings(this);
+        loadWords(settings.wordLength);
+    	
+    	gameplay = settings.isEvil ? new EvilGameplay(words, settings.wordLength, settings.maxTries, this) : 
+    		new GoodGameplay(words, settings.wordLength, settings.maxTries, this);    	
+    	
+    	gallows.setMaxSteps(settings.maxTries);
     	gallows.reset();
+    	
     	updateProgress();
     }    
             
@@ -102,6 +123,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	String guess = gameplay.getGuess();
     	TextView text = (TextView)findViewById(R.id.hangmanProgress);
     	text.setText(guess);
+    	TextView tries = (TextView)findViewById(R.id.textViewTries);
+    	tries.setText("" + gameplay.getTries());
     }
     
     public void onKeyPressed(char letter)
@@ -115,6 +138,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     public void onLose(String word)
     {    
     	LoseDialog dialog = new LoseDialog();
+    	dialog.word = word;
     	dialog.setListener(this);
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
@@ -123,6 +147,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     public void onWin(String word, int tries)
     {    
     	WinDialog dialog = new WinDialog();
+    	dialog.word = word;
     	dialog.setListener(this);
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");

@@ -1,6 +1,8 @@
 package com.example.hangman.gameplay;
 
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Random;
 
 import android.util.SparseIntArray;
 
@@ -45,7 +47,7 @@ public class EvilGameplay extends Gameplay
             ++tries;                
 
         if(won()) listener.onWin(guess, tries);
-        else if(lost()) listener.onLose(guess);
+        else if(lost()) listener.onLose(chooseRandomWord());
         
         return containsLetter;
     }
@@ -92,5 +94,12 @@ public class EvilGameplay extends Gameplay
         
         return key;
     }
+    
+    private String chooseRandomWord()
+	{
+		Random generator = new Random();
+		int index = generator.nextInt(words.size());
+		return words.get(index).toUpperCase(Locale.UK);	
+	}
 
 }

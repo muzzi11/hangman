@@ -93,17 +93,17 @@ public class History
     		}
     		
     		bufferedReader.close();
+    		inputStreamReader.close();
+    		stream.close();
+
     		Collections.sort(scores, new Comparator<HistoryEntry>()
-    				{
+    		{
     			@Override
     			public int compare(HistoryEntry lhs, HistoryEntry rhs)
     			{
-    				return lhs.score - rhs.score;
+    				return rhs.score - lhs.score;
     			}
     		});
-    		Collections.reverse(scores);
-    		
-    		stream.close();
     	}
     	catch(IOException e)
     	{
@@ -125,6 +125,8 @@ public class History
 			}
 			
 			writer.close();
+			stream.close();
+			outStream.close();
 		}
 		catch(IOException e)
     	{

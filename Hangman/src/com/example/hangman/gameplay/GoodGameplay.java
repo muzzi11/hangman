@@ -6,22 +6,15 @@ import java.util.Random;
 
 public class GoodGameplay extends Gameplay
 {
-	private String word;
-	private ArrayList<String> words;
+	private String word;	
 	
 	public GoodGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{
-		super(length, tries, listener);		
-		
-		ArrayList<String> filteredWords = new ArrayList<String>();
-		for (String word : words)		
-			if (word.length() == length) filteredWords.add(word);
-		this.words = filteredWords;
-		
-		chooseRandomWord();
+		super(length, tries, listener);						
+		chooseRandomWord(words);		
 	}
 	
-	private void chooseRandomWord()
+	private void chooseRandomWord(ArrayList<String> words)
 	{
 		Random generator = new Random();
 		int index = generator.nextInt(words.size());
