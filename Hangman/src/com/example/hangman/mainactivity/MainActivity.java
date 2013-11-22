@@ -79,7 +79,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         settings.load(this);
         gameState = new GameState();
         gameState.load(this);
-        replaySavedGame();
+
+        startGame(true);
                 
         ImageButton settingsButton = (ImageButton) findViewById(R.id.settings);
         settingsButton.setOnClickListener(new OnClickListener()
@@ -98,36 +99,9 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 			@Override
 			public void onClick(View v)
 			{
-				startGame();
+				startGame(false);
 			}
 		});
-    }
-    
-    private void replaySavedGame()
-    {
-    	Settings s = gameState.settings;
-    	
-    	loadWords(s.wordLength);
-    	
-    	if(s.isEvil)
-    	{
-    		gameplay = new EvilGameplay(words, s.wordLength, s.maxTries, this);
-    	}
-    	else
-    	{
-    		GoodGameplay gg = new GoodGameplay(words, s.wordLength, s.maxTries, this);
-    		if(!gameState.word.equals("")) gg.word = gameState.word;
-    		gameplay = gg;
-    	}
-    	
-    	gallows.setMaxSteps(s.maxTries);
-    	
-    	for(int i = 0; i < gameState.keyLog.length(); ++i)
-    	{
-    		onKeyPressed(gameState.keyLog.charAt(i));
-    	}
-    	
-    	updateProgress();
     }
     
     @Override
@@ -152,14 +126,17 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	gameSurfaceView.onResume();
     }
     
-    private void startGame()
+    private void startGame(boolean replaySaveGame)
     {    	    	
     	keyboard.reset();
     	audio.stop();
     	
-    	// Load possible new settings
-    	settings.load(this);
-    	gameState.reset(settings);
+    	if(!replaySaveGame)
+    	{
+	    	// Load possible new settings
+	    	settings.load(this);
+	    	gameState.reset(settings);
+    	}
     	
     	loadWords(settings.wordLength);
         
@@ -168,6 +145,16 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         
         gallows.setMaxSteps(settings.maxTries);
         gallows.reset();
+        
+        if(replaySaveGame)
+        {
+        	audio.mute(true);
+        	for(int i = 0; i < gameState.keyLog.length(); ++i)
+        	{
+        		onKeyPressed(gameState.keyLog.charAt(i));
+        	}
+        	audio.mute(false);
+        }
     	
     	updateProgress();
     }    
@@ -247,7 +234,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     @Override
     public void onNewGameSelect()
     {
-    	startGame();    
+    	startGame(false);
     } 
     
     private void loadWords(int length)

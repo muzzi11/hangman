@@ -16,11 +16,17 @@ public class AudioManager
 	public static final int HAMMER = 3;
 	public static final int CORRECT = 4;
 	
-	private boolean released = false;
+	private boolean released = false, muted = false;
 	private int current = 3;
+	
+	public void mute(boolean state)
+	{
+		muted = state;
+	}
 	
 	public void play(Context context, int music)
 	{
+		if(muted) return;
 		if (current < 3 && music > 2) return;
 		current = music;
 		
