@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +47,10 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private GLRenderer renderer;
 	private Settings settings;
 	
+	private int wordLength;
+	private int maxTries;
+	private boolean isEvil;
+	
 	private ArrayList<String> words = new ArrayList<String>();	
 	
     @Override
@@ -64,8 +70,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         history = new History(this);
         keyboard = new VirtualKeyboard(this, this);
                 
-        ImageButton options = (ImageButton) findViewById(R.id.button1);
-        options.setOnClickListener(new OnClickListener() {
+        ImageButton settings = (ImageButton) findViewById(R.id.settings);
+        settings.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -73,14 +79,18 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 		    	startActivity(intent);	
 			}
 		});
-    }
-    
-    @Override
-    protected void onStart()
-    {
-    	super.onStart();
-    	startGame();
-    }
+        
+        ImageButton newGame = (ImageButton) findViewById(R.id.newGame);
+        newGame.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startGame();
+			}
+		});
+        
+        startGame();
+    }  
     
     @Override
     protected void onPause()
@@ -107,12 +117,16 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	keyboard.reset();
         
     	settings = new Settings(this);
-        loadWords(settings.wordLength);
+    	wordLength = settings.wordLength;
+    	maxTries = settings.maxTries;
+    	isEvil = settings.isEvil;
     	
-    	gameplay = settings.isEvil ? new EvilGameplay(words, settings.wordLength, settings.maxTries, this) : 
-    		new GoodGameplay(words, settings.wordLength, settings.maxTries, this);    	
+        loadWords(wordLength);
     	
-    	gallows.setMaxSteps(settings.maxTries);
+    	gameplay = isEvil ? new EvilGameplay(words, wordLength, maxTries, this) : 
+    		new GoodGameplay(words, wordLength, maxTries, this);    	
+    	
+    	gallows.setMaxSteps(maxTries);
     	gallows.reset();
     	
     	updateProgress();
@@ -124,7 +138,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	TextView text = (TextView)findViewById(R.id.hangmanProgress);
     	text.setText(guess);
     	TextView tries = (TextView)findViewById(R.id.textViewTries);
-    	tries.setText("" + gameplay.getTries());
+    	tries.setText("" + (maxTries - gameplay.getTries()));
     }
     
     public void onKeyPressed(char letter)
@@ -142,16 +156,36 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	dialog.setListener(this);
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
+    	
+    	MediaPlayer mp = MediaPlayer.create(this, R.raw.loser);
+    	mp.setOnCompletionListener(new OnCompletionListener() {
+			
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				mp.release();				
+			}
+		});
+        mp.start();
     }
     
     public void onWin(String word, int tries)
     {    
-    	WinDialog dialog = new WinDialog();
+    	WinDialog dialog = new WinDialog();    	
     	dialog.word = word;
     	dialog.setListener(this);
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
     	history.score(word, tries);
+    	
+    	MediaPlayer mp = MediaPlayer.create(this, R.raw.winner);
+    	mp.setOnCompletionListener(new OnCompletionListener() {
+			
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				mp.release();				
+			}
+		});
+        mp.start();
     }    
     
     @Override

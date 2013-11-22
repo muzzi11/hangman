@@ -14,7 +14,7 @@ import android.util.Log;
 public class Settings 
 {	
 	public boolean isEvil = false;
-	public int maxTries = 5;
+	public int maxTries = 20;
 	public int wordLength = 5;
 	
 	private Context context;
