@@ -17,13 +17,15 @@ public class AudioManager
 	public static final int CORRECT = 4;
 	
 	private boolean released = false;
+	private int current = 3;
 	
 	public void play(Context context, int music)
 	{
-		int id = 1;
+		if (current < 3 && music > 2) return;
+		current = music;
 		
 		stop();
-		Log.d("Hangman", "Playing " + music);
+		int id = 1;
 		switch (music)
 		{
 			case WIN:
