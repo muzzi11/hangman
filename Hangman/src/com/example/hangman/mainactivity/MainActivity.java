@@ -35,6 +35,7 @@ import com.example.hangman.virtualkeyboard.KeyboardListener;
 import com.example.hangman.virtualkeyboard.VirtualKeyboard;
 import com.example.hangman.settings.Settings;
 import com.example.hangman.settingsactivity.*;
+import com.example.hangman.audio.*;
 
 public class MainActivity extends Activity implements GameplayListener, KeyboardListener, DialogListener
 {
@@ -46,12 +47,13 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private GameSurfaceView gameSurfaceView;
 	private GLRenderer renderer;
 	private Settings settings;
+	private AudioManager audio;
 	
 	private int wordLength;
 	private int maxTries;
 	private boolean isEvil;
 	
-	private ArrayList<String> words = new ArrayList<String>();	
+	private ArrayList<String> words;	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -69,7 +71,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         
         history = new History(this);
         keyboard = new VirtualKeyboard(this, this);
-                
+        audio = new AudioManager();
+        
         ImageButton settings = (ImageButton) findViewById(R.id.settings);
         settings.setOnClickListener(new OnClickListener() {
 			
@@ -98,6 +101,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	super.onPause();
     	//renderTarget.pause();
     	gameSurfaceView.onPause();
+    	audio.stop();
     }
     
     @Override
@@ -150,42 +154,28 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     public void onLose(String word)
-    {    
+    {   
+    	audio.play(this, AudioManager.LOSE);
+    	
     	LoseDialog dialog = new LoseDialog();
     	dialog.word = word;
-    	dialog.setListener(this);
+    	dialog.listener = this;
+    	dialog.audioManager = audio;
     	dialog.setCancelable(false);
-    	dialog.show(getFragmentManager(), "Hangman");
-    	
-    	MediaPlayer mp = MediaPlayer.create(this, R.raw.loser);
-    	mp.setOnCompletionListener(new OnCompletionListener() {
-			
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				mp.release();				
-			}
-		});
-        mp.start();
+    	dialog.show(getFragmentManager(), "Hangman");    	    	
     }
     
     public void onWin(String word, int tries)
     {    
+    	audio.play(this, AudioManager.WIN);
+    	
     	WinDialog dialog = new WinDialog();    	
     	dialog.word = word;
-    	dialog.setListener(this);
+    	dialog.listener = this;
+    	dialog.audioManager = audio;
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
-    	history.score(word, tries);
-    	
-    	MediaPlayer mp = MediaPlayer.create(this, R.raw.winner);
-    	mp.setOnCompletionListener(new OnCompletionListener() {
-			
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				mp.release();				
-			}
-		});
-        mp.start();
+    	history.score(word, tries);    	    	
     }    
     
     @Override
@@ -216,8 +206,10 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     private void loadWords(int length)
     {
+    	words = new ArrayList<String>();
     	try
     	{
+    		Log.d("Hangman", "Opening file: " + "words" + length + ".txt");
     		InputStream stream = getAssets().open("words" + length + ".txt");
     		InputStreamReader inputStreamReader = new InputStreamReader(stream);
     		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);

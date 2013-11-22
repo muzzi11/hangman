@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
+import android.util.Log;
+
 public class GoodGameplay extends Gameplay
 {
 	private String word;	
 	
 	public GoodGameplay(ArrayList<String> words, int length, int tries, GameplayListener listener)
 	{
-		super(length, tries, listener);						
+		super(length, tries, listener);	
+		Log.d("Hangman", "Length: " + length);		
 		chooseRandomWord(words);		
+		Log.d("Hangman", "Word: " + word);
 	}
 	
 	private void chooseRandomWord(ArrayList<String> words)
