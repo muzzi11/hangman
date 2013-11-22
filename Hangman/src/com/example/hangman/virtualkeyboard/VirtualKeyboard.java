@@ -3,33 +3,20 @@ package com.example.hangman.virtualkeyboard;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.example.hangman.R;
-import com.example.hangman.R.drawable;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 public class VirtualKeyboard
 {	
 	private Map<Character, Button> buttons;
-	private Drawable correct;
-	private Drawable incorrect;
-	private Drawable normal;
 	private KeyboardListener listener;
 	
 	public VirtualKeyboard(Activity activity, KeyboardListener listenerIn)
 	{	    	
-		Resources resources = activity.getResources();
-    	correct = resources.getDrawable(R.drawable.correct_guess_selector);
-    	incorrect = resources.getDrawable(R.drawable.incorrect_guess);
-    	normal = resources.getDrawable(android.R.drawable.bottom_bar);
     	buttons = getKeyboardButtons(activity);
     	listener = listenerIn;
     	
