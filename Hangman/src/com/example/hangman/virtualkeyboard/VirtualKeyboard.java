@@ -3,8 +3,6 @@ package com.example.hangman.virtualkeyboard;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.example.hangman.audio.AudioManager;
-
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;

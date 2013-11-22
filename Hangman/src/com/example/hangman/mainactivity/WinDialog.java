@@ -8,11 +8,13 @@ import android.os.Bundle;
 
 public class WinDialog extends DialogFragment 
 {
-	public DialogListener listener;		
-	public String word;		
+	private DialogListener listener;		
+	private String word;		
 	
-	public WinDialog()
-	{		
+	public WinDialog(DialogListener listener, String word)
+	{
+		this.listener = listener;
+		this.word = word;
 		setCancelable(false);
 	}
 	
