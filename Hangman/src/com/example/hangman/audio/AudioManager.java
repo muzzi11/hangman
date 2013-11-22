@@ -5,6 +5,7 @@ import com.example.hangman.R;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.util.Log;
 
 public class AudioManager 
 {
@@ -15,9 +16,14 @@ public class AudioManager
 	public static final int HAMMER = 3;
 	public static final int CORRECT = 4;
 	
+	private boolean released = false;
+	
 	public void play(Context context, int music)
 	{
 		int id = 1;
+		
+		stop();
+		Log.d("Hangman", "Playing " + music);
 		switch (music)
 		{
 			case WIN:
@@ -33,20 +39,27 @@ public class AudioManager
 				id = R.raw.correct;
 				break;
 		}		
-		mp = MediaPlayer.create(context, id);
+		mp = MediaPlayer.create(context,id);
 		
 		mp.setOnCompletionListener(new OnCompletionListener() 
 		{			
 			@Override
 			public void onCompletion(MediaPlayer mp) {
-				mp.release();				
+				stop();				
 			}
 		});
         mp.start();
+        released = false;
 	}
 	
 	public void stop()
-	{
-		if (mp != null) mp.release();
+	{		
+		Log.d("Hangman", "Stopping");
+		if (mp == null) return;
+				
+		if (!released) mp.stop();
+				
+		mp.release();
+		released = true;
 	}
 }

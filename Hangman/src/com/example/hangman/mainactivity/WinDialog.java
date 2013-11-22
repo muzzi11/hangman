@@ -12,8 +12,7 @@ import android.os.Bundle;
 
 public class WinDialog extends DialogFragment 
 {
-	public DialogListener listener;	
-	public AudioManager audioManager;	
+	public DialogListener listener;		
 	public String word;		
 	
     @Override
@@ -25,16 +24,14 @@ public class WinDialog extends DialogFragment
                .setPositiveButton("New game", new DialogInterface.OnClickListener() 
                {
                    public void onClick(DialogInterface dialog, int id) 
-                   {
-                	   audioManager.stop();
+                   {                	                 	   
                        listener.onNewGame();                       
                    }
                })
                .setNegativeButton("Highscores", new DialogInterface.OnClickListener() 
                {
                    public void onClick(DialogInterface dialog, int id) 
-                   {
-                	   audioManager.stop();
+                   {                	   
                        listener.onHighscoreSelect();                       
                    }
                });        

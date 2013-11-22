@@ -7,14 +7,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -52,6 +49,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private int wordLength;
 	private int maxTries;
 	private boolean isEvil;
+	private boolean isFinished;
 	
 	private ArrayList<String> words;	
 	
@@ -101,7 +99,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	super.onPause();
     	//renderTarget.pause();
     	gameSurfaceView.onPause();
-    	audio.stop();
+    	
+    	if (!isFinished) audio.stop();
     }
     
     @Override
@@ -118,6 +117,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     private void startGame()
     {
+    	isFinished = false;
+    	
     	keyboard.reset();
         
     	settings = new Settings(this);
@@ -146,40 +147,40 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     public void onKeyPressed(char letter)
-    {
-    	boolean isCorrect = gameplay.guess(letter);
-    	keyboard.highlight(letter, isCorrect);
-    	audio.stop();
+    { 	
+    	boolean isCorrect = gameplay.guess(letter);    	    	    	
+    	keyboard.highlight(letter, isCorrect);    	
+   	    	
     	if(!isCorrect)
 		{ 
-    		audio.play(this, AudioManager.HAMMER);
+    		if (!isFinished) audio.play(this, AudioManager.HAMMER);
     		gallows.nextStep();
 		}
     	else 
-    		audio.play(this, AudioManager.CORRECT);
+    		if (!isFinished) audio.play(this, AudioManager.CORRECT);
     	updateProgress();
     }
     
     public void onLose(String word)
-    {   
+    {       	
+    	isFinished = true;
     	audio.play(this, AudioManager.LOSE);
-    	
+    	    	
     	LoseDialog dialog = new LoseDialog();
     	dialog.word = word;
-    	dialog.listener = this;
-    	dialog.audioManager = audio;
+    	dialog.listener = this;    	
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");    	    	
     }
     
     public void onWin(String word, int tries)
-    {    
-    	audio.play(this, AudioManager.WIN);
+    {   
+    	isFinished = true;
+    	audio.play(this, AudioManager.WIN);    	
     	
     	WinDialog dialog = new WinDialog();    	
     	dialog.word = word;
-    	dialog.listener = this;
-    	dialog.audioManager = audio;
+    	dialog.listener = this;    	
     	dialog.setCancelable(false);
     	dialog.show(getFragmentManager(), "Hangman");
     	history.score(word, tries);    	    	

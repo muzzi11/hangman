@@ -10,8 +10,7 @@ import com.example.hangman.audio.*;
 
 public class LoseDialog extends DialogFragment 
 {
-	public DialogListener listener;
-	public AudioManager audioManager;
+	public DialogListener listener;	
 	public String word;	
 		
 	public void setListener(DialogListener listener)
@@ -28,16 +27,14 @@ public class LoseDialog extends DialogFragment
                .setPositiveButton("New game", new DialogInterface.OnClickListener() 
                {
                    public void onClick(DialogInterface dialog, int id) 
-                   {
-                	   audioManager.stop();
+                   {                	   
                        listener.onNewGame();                       
                    }
                })
                .setNegativeButton("Highscores", new DialogInterface.OnClickListener() 
                {
                    public void onClick(DialogInterface dialog, int id) 
-                   {
-                	   audioManager.stop();
+                   {                	   
                        listener.onHighscoreSelect();                       
                    }
                });        
