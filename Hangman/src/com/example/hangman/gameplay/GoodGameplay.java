@@ -22,7 +22,7 @@ public class GoodGameplay extends Gameplay
 	}
 		
 	@Override
-	public boolean guess(char letter)	
+	public boolean guess(char letter)
 	{		
 		boolean letterGuessed = word.contains("" + letter);
 		

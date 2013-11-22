@@ -13,7 +13,7 @@ public class HistoryEntry
 	
 	public void fromString(String str)
 	{
-		String[] tokens = str.split(":");
+		String[] tokens = str.split(";");
 		if(tokens.length == 2)
 		{
 			word = tokens[0];

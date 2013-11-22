@@ -8,20 +8,20 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 public class Settings 
 {	
 	public boolean isEvil = false;
-	public int maxTries = 0;
-	public int wordLength = 0;
+	public int maxTries = 5;
+	public int wordLength = 5;
 	
-	private Activity activity;
+	private Context context;
 	
-	public Settings(Activity activity)
+	public Settings(Context context)
 	{		
-		this.activity = activity;
+		this.context = context;
 		load();
 	}
 	
@@ -29,7 +29,7 @@ public class Settings
 	{	
 		try
     	{
-    		InputStream stream = activity.openFileInput("settings.txt");
+    		InputStream stream = context.openFileInput("settings.txt");
     		InputStreamReader inputStreamReader = new InputStreamReader(stream);
     		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
     		
@@ -54,7 +54,7 @@ public class Settings
 	{
 		try
 		{			
-			OutputStream outStream = activity.openFileOutput("settings.txt", activity.MODE_PRIVATE);
+			OutputStream outStream = context.openFileOutput("settings.txt", Context.MODE_PRIVATE);
 			OutputStreamWriter stream = new OutputStreamWriter(outStream);
 			BufferedWriter writer = new BufferedWriter(stream); 
 						

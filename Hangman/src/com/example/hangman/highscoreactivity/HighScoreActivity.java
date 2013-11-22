@@ -31,8 +31,8 @@ public class HighScoreActivity extends Activity {
 	    for(int i = 0; i < words.size(); ++i)
 	    {
 	    	StringBuilder builder = new StringBuilder();
-	    	builder.append(i + 1).append(".\t");
-	    	builder.append(words.get(i)).append('\t');
+	    	builder.append(i + 1).append(".\t\t");
+	    	builder.append(words.get(i)).append("\t\t");
 	    	builder.append(scores.get(i));
 	    	highscores.add(builder.toString());
 	    }
