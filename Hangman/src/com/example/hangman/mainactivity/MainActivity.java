@@ -52,9 +52,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 	private Settings settings;
 	private GameState gameState;
 
-	private AudioManager audio;
-
-	private boolean isFinished;
+	private AudioManager audio;	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -144,7 +142,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	gameState.save(this);
     	gameSurfaceView.onPause();
     	
-    	if (!isFinished) audio.stop();
+    	audio.stop();
     }
     
     @Override
@@ -155,9 +153,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     private void startGame()
-    {
-    	isFinished = false;
-    	
+    {    	    	
     	keyboard.reset();
     	audio.stop();
     	
@@ -197,11 +193,11 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 
     	if(!isCorrect)
 		{ 
-    		if (!isFinished) audio.play(this, AudioManager.HAMMER);
+    		audio.play(this, AudioManager.HAMMER);
     		gallows.nextStep();
 		}
     	else 
-    		if (!isFinished) audio.play(this, AudioManager.CORRECT);
+    		audio.play(this, AudioManager.CORRECT);
 
     	updateProgress();
     }
@@ -209,7 +205,6 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     @Override
     public void onLose(String word)
     {       	
-    	isFinished = true;
     	audio.play(this, AudioManager.LOSE);
     	gameState.reset(settings);
     	
@@ -219,8 +214,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     @Override
     public void onWin(String word, int tries)
-    {       	    
-    	isFinished = true;
+    {       	
     	audio.play(this, AudioManager.WIN);    	
     	gameState.reset(settings);
     	
