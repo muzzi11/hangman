@@ -8,15 +8,13 @@ import android.os.Bundle;
 
 public class WinDialog extends DialogFragment 
 {
-	private DialogListener listener;
-	private String word;
+	public DialogListener listener;		
+	public String word;		
 	
-	public WinDialog(String word, DialogListener listener)
-	{
-		this.word = word;
-		this.listener = listener;
+	public WinDialog()
+	{		
 		setCancelable(false);
-	}	
+	}
 	
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) 
@@ -26,14 +24,14 @@ public class WinDialog extends DialogFragment
         builder.setMessage("Congratulations! You have guessed: " + word + ". Want to play again?")
                .setPositiveButton("New game", new DialogInterface.OnClickListener() 
                {
-                   public void onClick(DialogInterface dialog, int id) 
+                   public void onClick(DialogInterface dialog, int id)
                    {
                        listener.onNewGameSelect();
                    }
                })
                .setNegativeButton("Highscores", new DialogInterface.OnClickListener() 
                {
-                   public void onClick(DialogInterface dialog, int id) 
+                   public void onClick(DialogInterface dialog, int id)
                    {
                        listener.onHighscoreSelect();                       
                    }

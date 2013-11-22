@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +54,11 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 
 	private AudioManager audio;
 	
+	private int wordLength;
+	private int maxTries;
+	private boolean isEvil;
+	private boolean isFinished;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {   				
@@ -66,6 +69,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
         words = new ArrayList<String>();
         
         keyboard = new VirtualKeyboard(this, this);
+        audio = new AudioManager();
         
         history = new History(this);
         
@@ -102,6 +106,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
 				startGame();
 			}
 		});
+        startGame();
     }
     
     private void replaySavedGame()
@@ -140,7 +145,8 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     	}
     	gameState.save(this);
     	gameSurfaceView.onPause();
-    	audio.stop();
+    	
+    	if (!isFinished) audio.stop();
     }
     
     @Override
@@ -152,19 +158,22 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     
     private void startGame()
     {
+    	isFinished = false;
+    	
     	keyboard.reset();
+    	audio.stop();
     	
     	// Load possible new settings
     	settings.load(this);
     	gameState.reset(settings);
     	
-        loadWords(settings.wordLength);
-    	
-    	gameplay = settings.isEvil ? new EvilGameplay(words, settings.wordLength, settings.maxTries, this) : 
-    		new GoodGameplay(words, settings.wordLength, settings.maxTries, this);    	
-    	
-    	gallows.setMaxSteps(settings.maxTries);
-    	gallows.reset();
+    	loadWords(settings.wordLength);
+        
+        gameplay = settings.isEvil ? new EvilGameplay(words, settings.wordLength, settings.maxTries, this) : 
+                new GoodGameplay(words, settings.wordLength, settings.maxTries, this);            
+        
+        gallows.setMaxSteps(settings.maxTries);
+        gallows.reset();
     	
     	updateProgress();
     }    
@@ -172,6 +181,7 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     private void updateProgress()
     {
     	int maxTries = gameState.settings.maxTries;
+    	Log.d("Hangman", "GameState maxtries " + maxTries);
     	String guess = gameplay.getGuess();
     	
     	TextView text = (TextView)findViewById(R.id.hangmanProgress);
@@ -181,46 +191,43 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     }
     
     public void onKeyPressed(char letter)
-    {
-    	boolean isCorrect = gameplay.guess(letter);
-    	
-    	gameState.updateState(letter);
-    	
+    { 	
+    	boolean isCorrect = gameplay.guess(letter);    	    	    	
     	keyboard.highlight(letter, isCorrect);
+    	gameState.updateState(letter);
 
-    	audio.stop();
     	if(!isCorrect)
 		{ 
-    		audio.play(this, AudioManager.HAMMER);
+    		if (!isFinished) audio.play(this, AudioManager.HAMMER);
     		gallows.nextStep();
 		}
-    	else
-    	{
-    		audio.play(this, AudioManager.CORRECT);
-    	}
+    	else 
+    		if (!isFinished) audio.play(this, AudioManager.CORRECT);
 
     	updateProgress();
     }
     
     public void onLose(String word)
-    {
-    	// reset our game state, don't want to lose again if we load back in
+    {       	
+    	isFinished = true;
+    	audio.play(this, AudioManager.LOSE);
     	gameState.reset(settings);
     	
-    	audio.play(this, AudioManager.LOSE);
-    	
-    	LoseDialog dialog = new LoseDialog(word, this);
-    	dialog.show(getFragmentManager(), "Hangman");
+    	LoseDialog dialog = new LoseDialog();
+    	dialog.word = word;
+    	dialog.listener = this;   	
+    	dialog.show(getFragmentManager(), "Hangman");    	    	
     }
     
     public void onWin(String word, int tries)
-    {
-    	// reset our game state, don't want to lose again if we load back in
+    {       	    
+    	isFinished = true;
+    	audio.play(this, AudioManager.WIN);    	
     	gameState.reset(settings);
     	
-    	audio.play(this, AudioManager.WIN);
-    	
-    	WinDialog dialog = new WinDialog(word, this);
+    	WinDialog dialog = new WinDialog();    	
+    	dialog.word = word;
+    	dialog.listener = this;    	
     	dialog.show(getFragmentManager(), "Hangman");
     	history.score(word, tries);
     }    

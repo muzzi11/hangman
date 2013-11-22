@@ -8,13 +8,11 @@ import android.os.Bundle;
 
 public class LoseDialog extends DialogFragment 
 {
-	private DialogListener listener;
-	private String word;	
+	public DialogListener listener;	
+	public String word;	
 		
-	public LoseDialog(String word, DialogListener listener)
-	{
-		this.word = word;
-		this.listener = listener;
+	public LoseDialog()
+	{		
 		setCancelable(false);
 	}
 	
@@ -35,7 +33,7 @@ public class LoseDialog extends DialogFragment
                {
                    public void onClick(DialogInterface dialog, int id) 
                    {
-                       listener.onHighscoreSelect();                       
+                	   listener.onHighscoreSelect();                       
                    }
                });        
         return builder.create();
