@@ -3,6 +3,8 @@ package com.example.hangman.virtualkeyboard;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.hangman.audio.AudioManager;
+
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -15,7 +17,7 @@ public class VirtualKeyboard
     private Map<Character, Button> buttons;
     private KeyboardListener listener;
     
-    public VirtualKeyboard(Activity activity, KeyboardListener listenerIn)
+    public VirtualKeyboard(final Activity activity, final KeyboardListener listenerIn)
     {                    
 	    buttons = getKeyboardButtons(activity);
 	    listener = listenerIn;
@@ -26,7 +28,7 @@ public class VirtualKeyboard
             {                                
                 @Override
                 public void onClick(View view)
-                {                                         
+                {                 	
                     onTouch(view);
                 }
             });

@@ -10,12 +10,29 @@ public class AudioManager
 {
 	private MediaPlayer mp;
 	
-	public static int WIN = 1;
-	public static int LOSE = 2;
+	public static final int WIN = 1;
+	public static final int LOSE = 2;
+	public static final int HAMMER = 3;
+	public static final int CORRECT = 4;
 	
 	public void play(Context context, int music)
 	{
-		int id = (music == WIN) ? R.raw.winner : R.raw.loser;
+		int id = 1;
+		switch (music)
+		{
+			case WIN:
+				id = R.raw.winner;
+				break;
+			case LOSE:
+				id = R.raw.loser;
+				break;
+			case HAMMER:
+				id = R.raw.hammer;
+				break;
+			case CORRECT:
+				id = R.raw.correct;
+				break;
+		}		
 		mp = MediaPlayer.create(context, id);
 		
 		mp.setOnCompletionListener(new OnCompletionListener() 

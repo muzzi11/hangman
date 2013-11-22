@@ -149,7 +149,14 @@ public class MainActivity extends Activity implements GameplayListener, Keyboard
     {
     	boolean isCorrect = gameplay.guess(letter);
     	keyboard.highlight(letter, isCorrect);
-    	if(!isCorrect) gallows.nextStep();
+    	audio.stop();
+    	if(!isCorrect)
+		{ 
+    		audio.play(this, AudioManager.HAMMER);
+    		gallows.nextStep();
+		}
+    	else 
+    		audio.play(this, AudioManager.CORRECT);
     	updateProgress();
     }
     
